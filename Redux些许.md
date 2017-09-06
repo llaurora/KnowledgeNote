@@ -1,4 +1,6 @@
 # Redux简明
+>**声明**：我基本是Fork，仅记录下学习，原创作者[kenberkeley](https://github.com/kenberkeley),原文地址：https://github.com/kenberkeley/redux-simple-tutorial
+
 ## § Store
 首先要区分 `store` 和 `state`
 
