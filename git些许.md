@@ -316,6 +316,7 @@ Changes to be committed:
 
 ```
 现在，暂存区的状态就变成这样了:
+
 ![](http://i.imgur.com/UCyeRnm.jpg)
 
 所以，`git add`命令实际上就是把要提交的所有修改放到暂存区（`Stage`），然后，执行`git commit`就可以一次性把暂存区的所有修改提交到分支
@@ -332,6 +333,7 @@ On branch master
 nothing to commit, working tree clean
 ```
 现在版本库变成了这样，暂存区就没有任何内容了：
+
 ![](http://i.imgur.com/rzmimBH.jpg)
 
 ![](http://i.imgur.com/ye5LDc2.png)
