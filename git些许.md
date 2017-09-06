@@ -57,7 +57,9 @@ Initialized empty Git repository in /Users/michael/learngit/.git/
 >一定要放到git-test目录下（子目录也行），因为这是一个Git仓库，放到其他地方Git找不到这个文件
 
 把一个文件放到Git仓库只需要两步:
+
 ![](http://i.imgur.com/nRLrDpQ.png)
+
 
 **⊙** 第一步：用命令`git add`告诉`Git`，把文件添加到仓库:
 ```js
