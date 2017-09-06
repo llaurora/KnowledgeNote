@@ -264,6 +264,7 @@ HEAD is now at 148453f third commit
 
 ### ⊙ 工作区
 就是在电脑里新建项目的目录，比如我的`git-test`文件夹就是一个工作区：
+
 ![](http://i.imgur.com/ZnRl5lN.png)
 
 ### ⊙ 版本库
