@@ -271,6 +271,7 @@ HEAD is now at 148453f third commit
 工作区有一个隐藏目录`.git`，这个不算工作区，而是`Git`的版本库。
 
 `Git`的版本库里存了很多东西，其中最重要的就是称为`stage`（或者叫`index`）的暂存区，还有`Git`为我们自动创建的第一个分支`master`，以及指向`master`的一个指针叫`HEAD`
+
 ![](http://i.imgur.com/rZomwJF.jpg)
 
 前面讲了我们把文件往`Git`版本库里添加的时候，是分两步执行的：
