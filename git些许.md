@@ -58,6 +58,7 @@ Initialized empty Git repository in /Users/michael/learngit/.git/
 
 把一个文件放到Git仓库只需要两步:
 ![](http://i.imgur.com/nRLrDpQ.png)
+
 **⊙** 第一步：用命令`git add`告诉`Git`，把文件添加到仓库:
 ```js
 $ git add testText.txt
