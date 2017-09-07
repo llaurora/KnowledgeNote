@@ -681,11 +681,13 @@ remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
 Unpacking objects: 100% (3/3), done.
 ```
 进入`git-clone-test`目录看看，已经有`README.md`文件了。
+
 ![](http://i.imgur.com/cAT6hTB.png)
 
 * 如果有多个人协作开发，那么每个人各自从远程克隆一份就可以了。
 
 * 你也许还注意到，`GitHub`给出的地址不止一个，还可以用`git@github.com:DxLucky/git-clone-test.git`这样的地址。实际上，Git支持多种协议，默认的git://使用ssh，但也可以使用https等其他协议。
+* 
 ![](http://i.imgur.com/e9BFegX.png)
 
 * 使用https除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用ssh协议而只能用https。
@@ -696,7 +698,9 @@ Unpacking objects: 100% (3/3), done.
 >Git支持多种协议，包括https，但通过ssh支持的原生git协议速度最快
 
 ## § <a name="branch-manage">分支管理</a>
+
 ![](http://i.imgur.com/XXIWiFi.png)
+
 分支在实际中有什么用呢？假设你准备开发一个新功能，但是需要两周才能完成，第一周你写了50%的代码，如果立刻提交，由于代码还没写完，不完整的代码库会导致别人不能干活了。如果等代码全部写完再一次提交，又存在丢失每天进度的巨大风险。
 
 现在有了分支，就不用怕了。你创建了一个属于你自己的分支，别人看不到，还继续在原来的分支上正常工作，而你在自己的分支上干活，想提交就提交，直到开发完毕后，再一次性合并到原来的分支上，这样，既安全，又不影响别人工作。
