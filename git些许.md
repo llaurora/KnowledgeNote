@@ -1,5 +1,5 @@
 # Git相关(Windows)
->**声明**：我基本是Fork了阮一峰老师的Git教程，仅记录下学习，原文https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000
+>**声明**：我基本是Copy了阮一峰老师的Git教程，仅记录下学习，原文https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000
 
 # 目录
 #### &sect; [创建版本库](#create-rep)
