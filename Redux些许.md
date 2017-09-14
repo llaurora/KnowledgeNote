@@ -1453,6 +1453,9 @@ VisibleTodoList.contextTypes = {
 }
 ```
 `React-Redux`自动生成的容器组件的代码，就类似上面这样，从而拿到`store`。
+
+![](https://i.imgur.com/DBfcjXe.png)
+
 ## &sect; 实例：计数器
 下面是一个计数器组件，它是一个纯的 UI 组件
 ```js
