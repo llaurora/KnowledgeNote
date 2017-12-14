@@ -103,6 +103,7 @@ nrm就是 `npm registry manager` 也就是npm的镜像源管理工具，有时�
 * 命令：`nrm ls` 用于展示所有可切换的镜像地址
 * 命令：nrm use taobao 我们这样就可以直接切换到taobao源上了。当然也可以按照上面罗列的其他内容进行切换
 
+![](https://i.imgur.com/mh1TGTY.png)
 
 参考地址：[http://blog.csdn.net/tyro_java/article/details/51232458](http://blog.csdn.net/tyro_java/article/details/51232458)
 
