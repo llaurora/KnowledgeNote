@@ -970,7 +970,7 @@ class Person extends BaseComponent{
 import React from "react";
 import {immutableRenderDecorator} from "react-immutable-render-mixin";
 
-@immutableRenderDecorator
+immutableRenderDecorator
 class Person extends React.Component{
     constructor(props){
         super(props)
@@ -994,7 +994,7 @@ import React from "react";
 import ImmutablePropTypes from "react-immutable-proptypes";
 import BaseComponent from "../baseComponent/baseComponent.jsx";
 
-@immutableRenderDecorator
+immutableRenderDecorator
 class Person extends React.Component{
    static propTypes = {
         $person:ImmutablePropTypes.map
