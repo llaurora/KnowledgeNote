@@ -1,0 +1,13 @@
+{
+  "code": 1,
+  "errorMsg": "成功",
+  "body":{
+    "name":"小白",
+    "sex":20,
+    "shopping":[
+      {"id":100,"goods":"商品1","price":100},
+      {"id":200,"goods":"商品2","price":200},
+      {"id":300,"goods":"商品3","price":300}
+    ]
+  }
+}

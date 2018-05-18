@@ -1,0 +1,51 @@
+{
+  "code": 1,
+  "errorMsg": "信息错误",
+  "body":{
+    "name":"同事对话",
+    "listArr":[
+      {
+        "title":"九诺客服",
+        "onLineRate":"12/15",
+        "member":[
+          {
+            "userAvatar":"../../../../asset/images/userAvatar.jpg",
+            "userName":"小竹子1",
+            "userId":"00001",
+            "state":0
+          },
+          {
+            "userAvatar":"../../../../asset/images/userAvatar.jpg",
+            "userName":"小竹子2",
+            "userId":"00002",
+            "state":1
+          },
+          {
+            "userAvatar":"../../../../asset/images/userAvatar.jpg",
+            "userName":"小竹子3",
+            "userId":"00003",
+            "state":2
+          }
+        ]
+      },
+      {
+        "title":"支付组",
+        "onLineRate":"9/12",
+        "member":[
+          {
+            "userAvatar":"../../../../asset/images/userAvatar.jpg",
+            "userName":"小叶子1",
+            "userId":"00001",
+            "state":0
+          },
+          {
+            "userAvatar":"../../../../asset/images/userAvatar.jpg",
+            "userName":"小叶子2",
+            "userId":"00002",
+            "state":1
+          }
+        ]
+      }
+    ]
+  }
+}
