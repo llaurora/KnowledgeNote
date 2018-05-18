@@ -1,0 +1,46 @@
+{
+  "code": 1,
+  "errorMsg": "信息错误",
+  "body":{
+    "userName":"Joker",
+    "jobNum":9527,
+    "menuList":[
+      {
+        "name":"聊天",
+		"url":"chat",
+		"icon": "chat",
+        "num":8
+      },
+      {
+        "name":"监控台",
+        "url":"monitor",
+		"icon": "monitor"
+      },
+      {
+        "name":"客服",
+        "url":"service",
+		"icon": "service"
+      },
+      {
+        "name":"数据",
+        "url":"data",
+		"icon": "data"
+      },
+      {
+        "name":"记录",
+        "url":"record",
+		"icon": "record"
+      },
+      {
+        "name":"留言",
+        "url":"leaveMsg",
+		"icon": "leaveMsg"
+      },
+      {
+        "name":"设置",
+        "url":"setting",
+		"icon": "setting"
+      }
+    ]
+  }
+}

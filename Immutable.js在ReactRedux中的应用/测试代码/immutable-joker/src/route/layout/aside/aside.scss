@@ -1,0 +1,28 @@
+@import "../../../asset/style/dominant.scss";
+ul{
+   &#asideNav{
+       position: fixed;
+       top: 0;
+       left: 0;
+       bottom: 0;
+       background-color: $aside-navBgColor;
+       width: $aside-navWidth;
+       li{
+           padding-left: 20px;
+           height: 30px;
+           a{
+               span{
+                   color: $font-Whitecolor;
+               }
+               &.navActive{
+                   span{
+                       color: $dominant-hue;
+                   }
+               }
+           }
+           &:first-child{
+               margin-top: 30px;
+           }
+       }
+   }
+}

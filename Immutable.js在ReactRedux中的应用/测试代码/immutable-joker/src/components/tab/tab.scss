@@ -1,0 +1,25 @@
+@import "../../asset/style/dominant.scss";
+$tabMenu-height:36px;
+.tabControl{
+  width: 100%;
+  >ul{
+    @include flexLayout;
+    justify-content: space-around;
+    >li{
+      flex-grow: 1;
+      height: $tabMenu-height;
+      @include flexLayout;
+      justify-content: center;
+      background-color: $tabMenu-bgColor;
+      border: 1px solid $border-color;
+      cursor: pointer;
+      font-size: 12px;
+      color: $tabMenu-activeBgColor;
+      &.activeItem{
+        border: 1px solid $tabMenu-activeBgColor;
+        background-color: $tabMenu-activeBgColor;
+        color: $tabMenu-bgColor;
+      }
+    }
+  }
+}
