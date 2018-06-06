@@ -61,13 +61,13 @@
 ~**答：**在JS中的引用数据类型（如Object，Array等）使用的是引用赋值，如果新的对象简单的引用了原始对象，改变新的对象也将影响旧的；
 >与其他语言不通，JS引用数据类型（比如Object，Array）的值是保存在堆内存中的对象。JavaScript不允许直接访问堆内存中的位置，因此我们不能直接操作对象的堆内存空间。在操作对象时，实际上是在操作对象的引用而不是实际的对象（当复制保存着对象的某个变量时，操作的是对象的引用。但在为对象添加属性时，操作的是实际的对象）。因此，引用类型的值都是按引用访问的。这里的引用，我们可以粗浅地理解为保存在变量对象中的一个地址，该地址与堆内存的实际值相关联。当我们要访问堆内存中的引用数据类型时，实际上我们首先是从变量对象中获取了该对象的地址引用（或者地址指针），然后再从堆内存中取得我们需要的数据。
 
-![Alt text](./599584-8e93616d7afcf811.png)
+![](https://i.imgur.com/ReowvKs.png)
 
 * let m={a:10,b:20}在进行"="赋值的时候是把存放于栈里面的标识符obj1通过引用指针指向了存放于堆里面的{a:10,b:2};
 * 当let n=m的时候只是赋予n一个新的内存地址，但这个新的内存地址指向的还是存放于堆里面的同一个{a:10,b:2};
 * 所以当更改n的a属性的时候（n.a=100），输出的m的a属性也会发生变化
 
-![Alt text](./599584-c269c4c5cae7d537.png)
+![](https://i.imgur.com/zbfBOjB.png)
 
 JS中的引用数据类型自然也有优点，优点在于频繁的操作数据都是在原对象的基础上修改，不会创建新对象，从而可以有效的利用内存，不会浪费内存，这种特性称为**mutable**（可变），但恰恰它的优点也是它的缺点，太过于灵活多变在复杂数据的场景下也造成了它的不可控性，假设一个对象在多处用到，在某一处不小心修改了数据，其他地方很难预见到数据是如何改变的
 
@@ -185,7 +185,7 @@ let n=m;
 n.b=30;
 console.log(m===n);//输出的是true（m和n指向于堆里的对象是同一个，所以为true）
 ```
-![Alt text](./1526281164825.png)
+![](https://i.imgur.com/5Lbw24d.png)
 
 * 浅拷贝是只复制对象（比如有let m={a:10,b:{c:20}}）的第一层，第一层的操作互不影响，但嵌套层的引用数据类型指向的还是于堆中的同一个对象，还是会相互影响，像Object.assign()这类方法如果非要严格的算浅拷贝还是深拷贝，其属于浅拷贝。
 
@@ -234,12 +234,11 @@ console.log(obj2); //{1000,20,c:{d:3000,e:4000}}
 console.log(obj3); //{10,2000,c:{d:3000,e:4000}}
 ```
 
-![Alt text](./未标题1.png)
-
+![](https://i.imgur.com/X5bEbcJ.png)
 
 * 深拷贝是对对象以及对象的所有子对象进行拷贝，不管是嵌套层与否，指向于堆中的对象并不是同一个
 
-![Alt text](./未标题2.png)
+![](https://i.imgur.com/0EPUx0d.png)
 
 
 ## § <a name="what-ImmutableData">2.什么是 Immutable Data</a>
@@ -261,7 +260,7 @@ Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现�
 
 seamless-immutable的实现依赖于ECMAScript 5 的一些特性，如Object.defineProperty 和 Object.freeze，因此会在浏览器兼容性方面有所欠缺：
 
-![Alt text](./QQ图片20180510170207.png)
+![](https://i.imgur.com/pigHrU9.png)
 
 不过这不是问题啦，可以使用 `polyfill es-shims/es5-shim `来解决。
 
@@ -313,7 +312,7 @@ immutable.js提供了十余种不可变的类型（List，Map，Set，Seq，Coll
 structural sharing （结构共享）即如果对象树中一个节点发生变化，只修改这个节点和受它影响的父节点，其它节点则进行共享；
 请看下面动画：
 
-![Alt text](./687474703a2f2f696d672e616c6963646e2e636f6d2f7470732f69322f5442317a7a695f4b5858585858637458465858627262384f5658582d3631332d3537352e676966.gif)
+![](https://i.imgur.com/yAkwVZ4.gif)
 
 ##### 补充：
 ```javascript
@@ -321,11 +320,12 @@ let data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
 ```
 根据trie结构,存储的结构类似于
 
-![Alt text](./TB1UOBiX1SSBuNjy0FlXXbBpVXa-400-375.png)
+![](https://i.imgur.com/qWToJUh.png)
 
 如果更改了了tea字段 3 为 14,那么只需改变四个节点,来更新形成新的树, 这就是结构共享。
 
-![Alt text](./c07ad7d742c234e1f342.jpg)
+![](https://i.imgur.com/a9whADu.jpg)
+
 
 
 而正是因为Immutable.js通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术实现了`Structural Sharing（结构共享）`，继而带了两大好处：
@@ -406,7 +406,7 @@ console.log(Immutable.is(obj1,obj3)); //输出的是true(通过比较obj1和obj3
 
 这个特性非常的有趣，这里的lazy指的是什么？很难用语言来描述，我们看一个demo，看完你就明白了
 
-![Alt text](./f048f20e035056014dfb.png)
+![](https://i.imgur.com/BwqPuOV.png)
 
  这段代码的意思就是，数组先取奇数，然后再对基数进行平方操作，然后在console.log第2个数，同样的代码，用immutable的seq对象来实现，filter只执行了3次，但原生执行了8次。
    
@@ -479,11 +479,11 @@ console.log(getVal) //getVal是JS原生对象{d:3}
 
 （做了个简单的fromJS和Map性能对比，同等条件下，分别用两种方法处理1000000条数据，可以看到fromJS开销是Map的4倍）
 
-![Alt text](./1526544834909.png)
+![](https://i.imgur.com/LCBle6R.png)
 
 * 2.js是弱类型，但Map类型的key必须是string！(看下图官网说明)；
 
-![Alt text](./1526544863664.png)
+![](https://i.imgur.com/lWjbPKP.png)
 
 * 3.所有针对immutable变量的增删改必须左边有赋值，因为所有操作都不会改变原来的值，只是生成一个新的变量；
 
@@ -538,22 +538,22 @@ React的组件渲染分为初始化渲染（render）和更新渲染（re-render
 ##### 初始化渲染
 在初始化渲染的时候会调用根组件下的所有组件的render方法进行渲染，如下图（绿色表示已渲染，这一层是没有问题的）：
 
-![Alt text](./4078962238-585142242e316_articlex.jpg)
+![](https://i.imgur.com/R2t8m6F.jpg)
 
 ##### 提出改变
 但是当我们要更新某个子组件的时候，如下图的绿色组件（从根组件传递下来应用在绿色组件上的数据发生改变）：
 
-![Alt text](./1687340203-5851427977a39_articlex.jpg)
+![](https://i.imgur.com/AUv9j16.jpg)
 
 ##### 理想更新
 我们的理想状态是只调用关键路径上组件的render，如下图：
 
-![Alt text](./5dcbaaedcf45ba22ca41b17fe699439f.jpg)
+![](https://i.imgur.com/nvNzd3u.jpg)
 
 ##### 默认行为
 但是React的默认做法是调用所有组件的render，再对生成的虚拟DOM进行对比，如不变则不进行更新。这样的render和虚拟DOM的对比明显是在浪费，如下图（黄色表示浪费的render和虚拟DOM对比）
 
-![Alt text](./d3390985be8584ac8eec2d976449cd9c.jpg)
+![](https://i.imgur.com/Q5B01is.jpg)
 
 从上图可以看见，组件除了必要渲染的三个节点外，还渲染了其他不必要渲染的节点，这对性能是一个很大的浪费。如果对于复杂的页面，这将导致页面的整体体验效果非常差。
 
@@ -576,7 +576,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 
 为了进一步说明问题，我们再引用一张官网的图来解释，如下图（ SCU表示shouldComponentUpdate，绿色表示返回true(需要更新)，红色表示返回false(不需要更新)；vDOMEq表示虚拟DOM比对，绿色表示一致(不需要更新)，红色表示发生改变(需要更新)）：
 
-![Alt text](./478926453-57adb1fb25515_articlex.png)
+![](https://i.imgur.com/jiw7htV.png)
 
 根据渲染流程，首先会判断shouldComponentUpdate(SCU)是否需要更新。如果需要更新，则调用组件的render生成新的虚拟DOM，然后再与旧的虚拟DOM对比(vDOMEq)，如果对比一致就不更新，如果对比不同，则根据最小粒度改变去更新DOM；如果SCU不需要更新，则直接保持不变，同时其子元素也保持不变。
 
@@ -606,17 +606,17 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 #### §<a name="PureRenderMixin"> 5.1PureRenderMixin</a>
  es5时期的`PureRenderMixin`([react-addons-pure-render-mixin](https://www.npmjs.com/package/react-addons-pure-render-mixin))，但因为咱用的是es2015 class 的方式定义的 Component，已经不支持mixin了，这已经被从React 15.3.0 新增的 `PureComponent `类替代
 
-![Alt text](./1526452951598.png)
+![](https://i.imgur.com/2VWjF4o.png)
 
 #### §<a name="pureRender"> 5.2pureRender</a>
 带有es7装饰器@写法的`pureRender`([pure-render-decorator](https://www.npmjs.com/package/pure-render-decorator))，但这也已经被从React 15.3.0 新增的 `PureComponent `类替代了
 
-![Alt text](./1526453346482.png)
+![](https://i.imgur.com/ZuKjN5n.png)
 
 #### §<a name="shallowCompare">5.3shallowCompare</a>
 `shallowCompare`([react-addons-shallow-compare](https://reactjs.org/docs/shallow-compare.html))，这也已经被从React 15.3.0 新增的 `PureComponent `类替代了、、、
 
-![Alt text](./1526453877778.png)
+![](https://i.imgur.com/k2JLNN9.png)
 
 #### §<a name="PureComponent"> 5.4PureComponent</a>
 这个替代众多方案的PureComponent实际上跟之前面的方案是等价的，只是写起来会更加简介优雅，相比而言“根红苗正”是然后遗憾的是`PureComponent`也是shallowCompare（浅比较）、、、
@@ -673,7 +673,7 @@ class Person extends React.PureComponent{
 }
 ```
 
-![Alt text](./1526543297509.png)
+![](https://i.imgur.com/TVxv1vV.png)
 
 * 我第一次去触发父组件中按钮button的onClick点击事件，由于传过去`Person`子组件的age从20更改到了21，子组件`Person`重渲染了一次，OK的；
 * 而后我再去触发父组件中按钮button的onClick点击事件，传过`Person`子组件的age和name都没发生改变，还是上一次的20和"小白"，由于用了`React.PureComponent`，解决了如果用`React.Component`造成的子组件重渲染问题；
@@ -735,7 +735,8 @@ class Person extends React.PureComponent{
     }
 }
 ```
-![Alt text](./1526543411127.png)
+
+![](https://i.imgur.com/R05WQUr.png)
 
 * 我触发多少次父组件的按钮onClick点击事件，子组件`Person`就会重渲染多少次，虽然传过去的一直都是{name:"小白",age:"20"}；
 
@@ -804,7 +805,7 @@ console.log(isEqual,"isEqual")//输出的是false
 #### §<a name="use-boundary"> 6.1使用 immutable 的边界性问题</a>
 > 应用Immutable.js于React/Redux中，我们有必要来划分一下边界，哪些数据需要使用不可变数据，哪些数据要使用原生js数据结构，哪些地方需要做互相转换；
 
-![Alt text](./flow.png)
+![](https://i.imgur.com/OLV6hRT.png)
 
 * 在redux中，全局state必须是immutable的，这点毋庸置疑是我们使用immutable来优化redux的核心；
 * 组件props是通过redux的connect从state中获得的，并且引入immutableJS的另一个目的是减少组件shouldComponentUpdate中不必要渲染，shouldComponentUpdate中比对的是props，如果props是原生JS就失去了优化的意义；
@@ -955,13 +956,13 @@ class Person extends BaseComponent{
 }
 ```
 
-![Alt text](./1526543460600.png)
+![](https://i.imgur.com/GJ9XYdG.png)
 
 可以明显看到，仅重新渲染了age由20更改到21这一次！
 
 使用 Immutable 后，如下图，当红色节点的 state 变化后，不会再渲染树中的所有节点，而是只渲染图中绿色的部分：
 
-![Alt text](./1526543020852.png)
+![](https://i.imgur.com/AIfabVF.png)
 
 
 你也可以不用自己去手动封装shouldComponentUpdate或者在组件中重写，可以用封装好了的[react-immutable-render-mixin](https://github.com/jurassix/react-immutable-render-mixin)这个库就好了，还可以用es7的装饰器，哈哈哈
