@@ -1,3 +1,4 @@
+
 # Immutable.js在React/Redux中的应用
 
 ### 目录
@@ -53,7 +54,7 @@
     let obj1=Immutable.fromJS({a:1,b:2,c:{d:3}});
     let obj2=obj1.merge(obj1);
     obj2=obj2.updateIn(["c","d"],()=>300);
-    console.log(obj1.toJS(),obj2.toJS())//{a:1,b:2,c:{d:3}}，{a:100,b:2,c:{d:300}}
+    console.log(obj1.toJS(),obj2.toJS())//{a:1,b:2,c:{d:3}}，{a:1,b:2,c:{d:300}}
 ```
 
 #### § 观后感：
