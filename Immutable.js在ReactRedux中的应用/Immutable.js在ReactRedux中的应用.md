@@ -590,7 +590,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 * C8节点，绿色SCU (true)，表示需要更新，然后vDOMEq绿色，表示虚拟DOM一致，不更新DOM。
 
 >**&sect;Tips：**
-  * React渲染更新DOM与否是先根据render的逻辑生成虚拟DOM，再与旧的虚拟DOM进行对比，求出最小DOM更新操作，这是React做的事情。shouldComponentUpdate解决的是React的树形结构大了之后，虚拟DOM的生成非常卡的问题，因为render方法不加限制的话每次都会执行，而shouldComponentUpdate正是为了避免不必要的render，从而提高虚拟DOM的生成速度。 老实说如果不使用shouldComponentUpdate进行限制的话，react的性能是非常差的。
+  * React渲染更新DOM与否是先根据render的逻辑生成虚拟DOM，再与旧的虚拟DOM进行对比，求出最小DOM更新操作（React diff 会帮助我们计算出 Virtual DOM 中真正变化的部分，并只针对该部分进行实际 DOM 操作），这是React做的事情。shouldComponentUpdate解决的是React的树形结构大了之后，虚拟DOM的生成非常卡的问题，因为render方法不加限制的话每次都会执行，而shouldComponentUpdate正是为了避免不必要的render，从而提高虚拟DOM的生成速度。 老实说如果不使用shouldComponentUpdate进行限制的话，react的性能是非常差的。
 
 #### §<a name="focus-point"> 4.3带坑的一些注意点</a>
 * {...this.props} (不要滥用，请只传递component需要的props，传得太多，或者层次传得太深，都会加重shouldComponentUpdate里面的数据比较负担，因此，请慎用spread attributes（<Component {...props} />）)。
