@@ -1060,3 +1060,4 @@ const store = createStore(rootReducer, initialState);
 >* [React中key的必要性与使用](https://www.jianshu.com/p/0218ff2591ec)
 >* [React.PureComponent 配上 ImmutableJS 才更有意义](https://www.timefly.cn/react-purecomponent-with-immutablejs/)
 >* [react如何性能达到最大化(前传)，暨react为啥非得使用immutable.js](https://segmentfault.com/a/1190000004290333)
+>* [如何用React+Redux+ImmutableJS进行SPA开发](http://yunlaiwu.github.io/blog/2016/12/01/react+redux+immutablejs/)
