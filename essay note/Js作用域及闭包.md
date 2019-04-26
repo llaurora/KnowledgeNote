@@ -2,7 +2,7 @@
 #### &sect; [执行环境及作用域](#js-scope)
 * [为什么需要块级作用域？](#why-blockScope)
 * [ES6块级作用域(let/const)](#es6-blockScope)
-#### &sect; [执行环境及作用域](#js-closures)
+#### &sect; [闭包](#js-closures)
 
 #### &sect;<a name="js-scope">执行环境及作用域</a>
 
@@ -334,4 +334,6 @@ const funC = funA();
 >**&sect;参考资料：**
 >
 >* [《JavaScript高级程序设计》](#)
+>* [阮一峰《ECMAScript入门》](http://es6.ruanyifeng.com/#docs/let)
+>* [近一万字的ES6语法知识点补充](https://mp.weixin.qq.com/s/WxZYN9W-cSG2sd0wo-rAPw)
 
