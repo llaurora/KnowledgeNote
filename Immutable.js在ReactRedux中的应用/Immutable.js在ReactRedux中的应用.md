@@ -63,13 +63,13 @@
 ~**答：** 在JS中的引用数据类型（如Object，Array等）使用的是引用赋值，如果新的对象简单的引用了原始对象，改变新的对象也将影响旧的；
 >与其他语言不同，JS引用数据类型（比如Object，Array）的值是保存在堆内存中的对象。JavaScript不允许直接访问堆内存中的位置，因此我们不能直接操作对象的堆内存空间。在操作对象时，实际上是在操作对象的引用而不是实际的对象（当复制保存着对象的某个变量时，操作的是对象的引用。但在为对象添加属性时，操作的是实际的对象）。因此，引用类型的值都是按引用访问的。这里的引用，我们可以粗浅地理解为保存在变量对象中的一个地址，该地址与堆内存的实际值相关联。当我们要访问堆内存中的引用数据类型时，实际上我们首先是从变量对象中获取了该对象的地址引用（或者地址指针），然后再从堆内存中取得我们需要的数据。
 
-![](https://i.imgur.com/ReowvKs.png)
+![jsAssign1](assets/jsAssign1.png)
 
 * let m={a:10,b:20}在进行"="赋值的时候是把存放于栈里面的标识符obj1通过引用指针指向了存放于堆里面的{a:10,b:2};
 * 当let n=m的时候只是赋予n一个新的内存地址，但这个新的内存地址指向的还是存放于堆里面的同一个{a:10,b:2};
 * 所以当更改n的a属性的时候（n.a=100），输出的m的a属性也会发生变化
 
-![](https://i.imgur.com/zbfBOjB.png)
+![jsAssign2](assets/jsAssign2.png)
 
 JS中的引用数据类型自然也有优点，优点在于频繁的操作数据都是在原对象的基础上修改，不会创建新对象，从而可以有效的利用内存，不会浪费内存，这种特性称为**mutable**（可变），但恰恰它的优点也是它的缺点，太过于灵活多变在复杂数据的场景下也造成了它的不可控性，假设一个对象在多处用到，在某一处不小心修改了数据，其他地方很难预见到数据是如何改变的
 
@@ -187,12 +187,12 @@ let n=m;
 n.b=30;
 console.log(m===n);//输出的是true（m和n指向于堆里的对象是同一个，所以为true）
 ```
-![](https://i.imgur.com/5Lbw24d.png)
+![jsAssign2](assets/jsAssign2-7028477.png)
 
 * 浅拷贝是只复制对象（比如有let m={a:10,b:{c:20}}）的第一层，第一层的操作互不影响，但嵌套层的引用数据类型指向的还是于堆中的同一个对象，还是会相互影响，像Object.assign()这类方法如果非要严格的算浅拷贝还是深拷贝，其属于浅拷贝。
 
  Object.freeze 和 ES6 中新加入的 const 都可以达到防止对象被篡改的功能，但它们是 shallowCopy （浅拷贝）的，对象层级一深就要特殊处理了。
- 
+
  而像上面的这个引用数据类型赋值(=)充其量能算是“引用”，而不是真正的浅拷贝。而浅拷贝之于引用数据类型赋值(=)的不同在于，浅拷贝的得到的对象值是在堆里面给重新生成了一个对象，前后两个对象引用的并不是同一个对象，两相比较的话，输出的会是false;
 
 #####  例1：
@@ -236,11 +236,11 @@ console.log(obj2); //{1000,20,c:{d:3000,e:4000}}
 console.log(obj3); //{10,2000,c:{d:3000,e:4000}}
 ```
 
-![](https://i.imgur.com/X5bEbcJ.png)
+![shallowCopy](assets/shallowCopy.png)
 
 * 深拷贝是对对象以及对象的所有子对象进行拷贝，不管是嵌套层与否，指向于堆中的对象并不是同一个
 
-![](https://i.imgur.com/0EPUx0d.png)
+![deepCopy](assets/deepCopy.png)
 
 
 ## § <a name="what-ImmutableData">2.什么是 Immutable Data</a>
@@ -262,7 +262,7 @@ Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现�
 
 seamless-immutable的实现依赖于ECMAScript 5 的一些特性，如Object.defineProperty 和 Object.freeze，因此会在浏览器兼容性方面有所欠缺：
 
-![](https://i.imgur.com/pigHrU9.png)
+![seamlessImmutable](assets/seamlessImmutable-7028643.png)
 
 不过这不是问题啦，可以使用 `polyfill es-shims/es5-shim `来解决。
 
@@ -292,6 +292,7 @@ console.log(obj1===obj2);  //输出false（obj1和obj2指向于堆里的对象�
 ```
 
 ## § <a name="Immutable-introduce">3.Immutable.js介绍</a>
+
 #### § <a name="main-feature">3.1 Immutable.js 主要的三大特性</a>
 * 1、Persistent data structure （持久化数据结构）
 * 2、structural sharing （结构共享）
@@ -314,7 +315,7 @@ immutable.js提供了十余种不可变的类型（List，Map，Set，Seq，Coll
 structural sharing （结构共享）即如果对象树中一个节点发生变化，只修改这个节点和受它影响的父节点，其它节点则进行共享；
 请看下面动画：
 
-![](https://i.imgur.com/yAkwVZ4.gif)
+![structuralSharing](assets/structuralSharing.gif)
 
 ##### 补充：
 ```javascript
@@ -322,22 +323,50 @@ let data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
 ```
 根据trie结构,存储的结构类似于
 
-![](https://i.imgur.com/qWToJUh.png)
+![trieAddOne1](assets/trieAddOne1.png)
 
 如果更改了了tea字段 3 为 14,那么只需改变四个节点,来更新形成新的树, 这就是结构共享。
 
-![](https://i.imgur.com/a9whADu.jpg)
+![trieAddOne2](assets/trieAddOne2.jpeg)
 
+其实，在`Immutable.js`中的"节点"并不能简单的理解成对象中的"key"，其内部使用了`Trie(字典树)`数据结构，`Immutable.js`会把Immutable对象所有的key进行hash映射，将得到的hash值转化为二进制，从后向前每5位进行分割后再转化为`Trie树`，我们再来看个例子，假如有个Immutable对象zoo：
 
+```javascript
+const zoo = Immutable.fromJS({
+   'frog':🐸
+    'panda':🐼,
+    'monkey':🐒,
+    'rabbit':🐰,
+    'tiger':🐯,
+    'dog':{
+        'dog1':🐶,
+        'dog2':🐕,
+        ...// 还有 100 万只 dog
+    }
+    ...// 剩余还有 100 万个的字段
+})
+```
+
+'frog'进行 hash 之后的值为 3151780，转成二进制 `11 00000 00101 11101 00100`，同理'dog' hash 后转二机制为 `11 00001 01001 11100` 那么 frog 和 dog 在 Immutable 对象的 Trie 树的位置分别是：
+
+![trieZoo](assets/trieZoo.jpg)
+
+当然实际的Trie树会根据实际对象进行剪枝处理，没有值的分支会被剪掉，不会每个节点都长满了32个子节点。
+
+当比如需要将 zoo.frog 由 🐸 改成 👽 ，发生变动的节点只有上图中绿色的几个，其他的节点直接复用，这样比深拷贝产生的100万个节点效率高了很多。
+
+![trieZooChange](assets/trieZooChange.jpg)
 
 而正是因为Immutable.js通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术实现了`Structural Sharing（结构共享）`，继而带了两大好处：
+
 ##### 2.1：节省内存，避免CPU和内存的浪费
 
 >此好处回应解答上面`场景一`所为啥采用immutable.js
 
-immutable.js 使用了Structure Sharing 会尽量复用内存（努力避免创建新的对象），甚至以前使用的对象也可以再次被复用，没有被引用的对象会被垃圾回收。
+immutable.js 使用了`结构共享(Structure Sharing)` 会尽量复用内存（努力避免创建新的对象），甚至以前使用的对象也可以再次被复用，没有被引用的对象会被垃圾回收。
 
 ##### 例1：
+
 ```javascript
 let obj1=Immutable.fromJS({
          a:1,
@@ -393,8 +422,8 @@ let obj3=Immutable.fromJS({
         c:3
     }
 });
-console.log(obj1===obj2); //输出的是false（bj1和obj2指向于堆里的对象并不是同一个，所以为false）
-console.log(obj1===obj3); //输出的是false（bj1和obj2指向于堆里的对象并不是同一个，所以为false）
+console.log(obj1===obj2); //输出的是false（obj1和obj2指向于堆里的对象并不是同一个，所以为false）
+console.log(obj1===obj3); //输出的是false（obj1和obj3指向于堆里的对象并不是同一个，所以为false）
 console.log(obj1.get("b")===obj2.get("b")); //输出的是true（obj1.get("b")和obj2.get("b")指向于堆里的对象是同一个，共享了没有变化的b节点，所以为true）
 console.log(obj1.get("b")===obj3.get("b")); //输出的是false（obj1.get("b")和obj3.get("b")指向于堆里的对象不是同一个，所以为false）;
 //而如果我只想比较两个Immutable对象的键值是否一样，可以用Immutable.is()方法
@@ -408,7 +437,7 @@ console.log(Immutable.is(obj1,obj3)); //输出的是true(通过比较obj1和obj3
 
 这个特性非常的有趣，这里的lazy指的是什么？很难用语言来描述，我们看一个demo，看完你就明白了
 
-![](https://i.imgur.com/BwqPuOV.png)
+![supportLazyOperation](assets/supportLazyOperation.png)
 
  这段代码的意思就是，数组先取奇数，然后再对基数进行平方操作，然后在console.log第2个数，同样的代码，用immutable的seq对象来实现，filter只执行了3次，但原生执行了8次。
    
@@ -481,11 +510,11 @@ console.log(getVal) //getVal是JS原生对象{d:3}
 
 （做了个简单的fromJS和Map性能对比，同等条件下，分别用两种方法处理1000000条数据，可以看到fromJS开销是Map的4倍）
 
-![](https://i.imgur.com/LCBle6R.png)
+![avoidFromJs](assets/avoidFromJs.png)
 
 * 2.js是弱类型，但Map类型的key必须是string！(看下图官网说明)；
 
-![](https://i.imgur.com/lWjbPKP.png)
+![mapKeyString](assets/mapKeyString.png)
 
 * 3.所有针对immutable变量的增删改必须左边有赋值，因为所有操作都不会改变原来的值，只是生成一个新的变量；
 
@@ -540,29 +569,31 @@ React的组件渲染分为初始化渲染（render）和更新渲染（re-render
 ##### 初始化渲染
 在初始化渲染的时候会调用根组件下的所有组件的render方法进行渲染，如下图（绿色表示已渲染，这一层是没有问题的）：
 
-![](https://i.imgur.com/R2t8m6F.jpg)
+![render](assets/render.jpeg)
 
 ##### 提出改变
+
 但是当我们要更新某个子组件的时候，如下图的绿色组件（从根组件传递下来应用在绿色组件上的数据发生改变）：
 
-![](https://i.imgur.com/AUv9j16.jpg)
+![changeRender](assets/changeRender.jpeg)
 
 ##### 理想更新
 我们的理想状态是只调用关键路径上组件的render，如下图：
 
-![](https://i.imgur.com/nvNzd3u.jpg)
+![adjectiveRender](assets/adjectiveRender.jpeg)
 
 ##### 默认行为
+
 但是React的默认做法是调用所有组件的render，再对生成的虚拟DOM进行对比，如不变则不进行更新。这样的render和虚拟DOM的对比明显是在浪费，如下图（黄色表示浪费的render和虚拟DOM对比）
 
-![](https://i.imgur.com/Q5B01is.jpg)
+![defaultRender](assets/defaultRender.jpeg)
 
 从上图可以看见，组件除了必要渲染的三个节点外，还渲染了其他不必要渲染的节点，这对性能是一个很大的浪费。如果对于复杂的页面，这将导致页面的整体体验效果非常差。
 
 >**&sect;Tips：**
   * 拆分组件是有利于复用和组件优化的
   * 生成虚拟DOM并进行比对发生在render()后，而不是render()前
-  
+
 #### §<a name="life-cycle"> 4.1更新阶段的生命周期</a>
 * `componentWillReceiveProps(object nextProps)`：当挂载的组件接收到新的props时被调用。此方法应该被用于比较this.props 和 nextProps以用于使用this.setState()执行状态转换。（组件内部数据有变化，使用state，但是在更新阶段又要在props改变的时候改变state，则在这个生命周期里面）；
 * `shouldComponentUpdate(object nextProps, object nextState)`： 返回布尔值， 当有props或者state有改变发生时是否更新DOM时被调用；
@@ -570,7 +601,8 @@ React的组件渲染分为初始化渲染（render）和更新渲染（re-render
 * `componentDidUpdate(object prevProps, object prevState)`： 在更新发生后被立即调用。（可以在DOM更新完之后，做一些收尾的工作）
 
 >**&sect;Tips：**
-  * React的优化是基于`shouldComponentUpdate`的，该生命周期默认返回true，所以一旦prop或state有任何变化，都会引起重新re-render
+>
+>  * React的优化是基于`shouldComponentUpdate`的，该生命周期默认返回true，所以一旦prop或state有任何变化，都会引起重新re-render
 
 #### §<a name="about-shouldComponentUpdate"> 4.2关于shouldComponentUpdate</a>
 **shouldComponentUpdate 是React性能优化的关键。**（联系"场景二"，『===值比较』）
@@ -578,7 +610,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 
 为了进一步说明问题，我们再引用一张官网的图来解释，如下图（ SCU表示shouldComponentUpdate，绿色表示返回true(需要更新)，红色表示返回false(不需要更新)；vDOMEq表示虚拟DOM比对，绿色表示一致(不需要更新)，红色表示发生改变(需要更新)）：
 
-![](https://i.imgur.com/jiw7htV.png)
+![shouldComponentUpdate](assets/shouldComponentUpdate.png)
 
 根据渲染流程，首先会判断shouldComponentUpdate(SCU)是否需要更新。如果需要更新，则调用组件的render生成新的虚拟DOM，然后再与旧的虚拟DOM对比(vDOMEq)，如果对比一致就不更新，如果对比不同，则根据最小粒度改变去更新DOM；如果SCU不需要更新，则直接保持不变，同时其子元素也保持不变。
 
@@ -590,37 +622,107 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 * C8节点，绿色SCU (true)，表示需要更新，然后vDOMEq绿色，表示虚拟DOM一致，不更新DOM。
 
 >**&sect;Tips：**
-  * React渲染更新DOM与否是先根据render的逻辑生成虚拟DOM，再与旧的虚拟DOM进行对比，求出最小DOM更新操作（React diff 会帮助我们计算出 Virtual DOM 中真正变化的部分，并只针对该部分进行实际 DOM 操作），这是React做的事情。shouldComponentUpdate解决的是React的树形结构大了之后，虚拟DOM的生成非常卡的问题，因为render方法不加限制的话每次都会执行，而shouldComponentUpdate正是为了避免不必要的render，从而提高虚拟DOM的生成速度。 老实说如果不使用shouldComponentUpdate进行限制的话，react的性能是非常差的。
+>
+>  * React渲染更新DOM与否是先根据render的逻辑生成虚拟DOM，再与旧的虚拟DOM进行对比，求出最小DOM更新操作（React diff 会帮助我们计算出 Virtual DOM 中真正变化的部分，并只针对该部分进行实际 DOM 操作），这是React做的事情。shouldComponentUpdate解决的是React的树形结构大了之后，虚拟DOM的生成非常卡的问题，因为render方法不加限制的话每次都会执行，而shouldComponentUpdate正是为了避免不必要的render，从而提高虚拟DOM的生成速度。 老实说如果不使用shouldComponentUpdate进行限制的话，react的性能是非常差的。
 
 #### §<a name="focus-point"> 4.3带坑的一些注意点</a>
 * {...this.props} (不要滥用，请只传递component需要的props，传得太多，或者层次传得太深，都会加重shouldComponentUpdate里面的数据比较负担，因此，请慎用spread attributes（<Component {...props} />）)。
-* 请将方法的bind一律置于constructor（Component的render里不动态bind方法，方法都在constructor里bind好，如果要动态传参，方法可使用闭包返回一个最终可执行函数。如：showDelBtn(item) { return (e) => {}; }。如果每次都在render里面的jsx去bind这个方法，每次都要绑定会消耗性能。）
+
 * 复杂的页面不要在一个组件里面写完。
+
 * 请尽量使用const element（这个用法是工业聚在React讨论微信群里教会的，我们可以将不怎么变动，或者不需要传入状态的component写成const element的形式，这样能加快这个element的初始渲染速度）
+
 * map里面添加key，并且key不要使用index（可变的）。具体可参考[使用Perf工具研究React Key对渲染的影响](http://levy.work/2016-08-31-debug-react-key-with-performance-tool/)，[React中key的必要性与使用](https://www.jianshu.com/p/0218ff2591ec)
+
 * 尽量少用setTimeOut或不可控的refs、DOM操作。
+
 * props和state的数据尽可能简单明了，扁平化。
+
 * 使用return null而不是CSS的display:none来控制节点的显示隐藏。保证同一时间页面的DOM节点尽可能的少。
 
+* 请将方法的bind一律置于constructor（Component的render里不动态bind方法，方法都在constructor里bind好，如果要动态传参，方法可使用闭包返回一个最终可执行函数。如：showDelBtn(item) { return (e) => {}; }。如果每次都在render里面的jsx去bind这个方法，每次都要绑定会消耗性能。）
+
+  > 这儿补充下React中两种绑定this的方法，参考链接：[React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
+  >
+  > **Constructor bind vs Class properties**
+  >
+  > Constructor bind 就是在 Class 的 constructor 中为方法 bind this，不仅显式的写了很多强绑定，并且 方法声明 与 强制绑定 分割在不同的地方:
+  >
+  > ```javascript
+  > class Comp extends React.Component {
+  >   constructor() {
+  >     super();
+  >     this.toggleButton = this.toggleButton.bind(this);
+  >   }
+  > 
+  >   toggleButton() {
+  >     this.setState(prevState => ({ toggle: !prevState.toggle }));
+  >   }
+  >   
+  >  ...
+  > }
+  > ```
+  >
+  > OK，现在有一个处于 Stage 阶段的语法提案：`Public Class Fields`
+  > 其中一个特性就是 可以类中使用箭头函数语法(利用 Babel，我们可以提前使用它,[babel/plugin-proposal-class-properties · Babel](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties)):
+  >
+  > ```javascript
+  > class Comp extends React.Component {
+  >  
+  >   toggleButton = ()=> {
+  >     this.setState(prevState => ({ toggle: !prevState.toggle }));
+  >   }
+  >   
+  >  ...
+  > }
+  > ```
+  >
+  > **一般来讲，这两种方式唯一的差别就是性能和内存**
+  >
+  > > 这是 Donavon West  的一篇文章，详细解释了 两种 bind this 方法 的性能问题[Demystifying Memory Usage using ES6 React Classes – DailyJS – Medium](https://medium.com/dailyjs/demystifying-memory-usage-using-es6-react-classes-d9d904bc4557)
+  >
+  > 简单来说：
+  >
+  > * 当利用 `Public Class Fields`，使用 箭头函数 编写类方法，方法会声明在每个类实例上
+  >
+  >   ```javascript
+  >   handler = () => {
+  >    	//
+  >   }
+  >   ```
+  >
+  > * 而使用原本的类方法，方法会声明在 类的原型上面，所有实例都可复用
+  >
+  >   ```javascript
+  >   handler() {
+  >    	//
+  >   }
+  >   ```
+
+
+
 ## § <a name="react-solve">5.React官方的解决方案</a>
+
 随着React版本迭代，React官方有过以下解决方案：
 
 #### §<a name="PureRenderMixin"> 5.1PureRenderMixin</a>
  es5时期的`PureRenderMixin`([react-addons-pure-render-mixin](https://www.npmjs.com/package/react-addons-pure-render-mixin))，但因为咱用的是es2015 class 的方式定义的 Component，已经不支持mixin了，这已经被从React 15.3.0 新增的 `PureComponent `类替代
 
-![](https://i.imgur.com/2VWjF4o.png)
+![pureRenderMixin](assets/pureRenderMixin.png)
 
 #### §<a name="pureRender"> 5.2pureRender</a>
 带有es7装饰器@写法的`pureRender`([pure-render-decorator](https://www.npmjs.com/package/pure-render-decorator))，但这也已经被从React 15.3.0 新增的 `PureComponent `类替代了
 
-![](https://i.imgur.com/ZuKjN5n.png)
+![pureRender](assets/pureRender.png)
 
 #### §<a name="shallowCompare">5.3shallowCompare</a>
+
 `shallowCompare`([react-addons-shallow-compare](https://reactjs.org/docs/shallow-compare.html))，这也已经被从React 15.3.0 新增的 `PureComponent `类替代了、、、
 
-![](https://i.imgur.com/k2JLNN9.png)
+![shallowCompare](assets/shallowCompare.png)
 
 #### §<a name="PureComponent"> 5.4PureComponent</a>
+
 这个替代众多方案的PureComponent实际上跟之前面的方案是等价的，只是写起来会更加简介优雅，相比而言“根红苗正”是然后遗憾的是`PureComponent`也是shallowCompare（浅比较）、、、
 
 ##### 例1：
@@ -675,7 +777,7 @@ class Person extends React.PureComponent{
 }
 ```
 
-![](https://i.imgur.com/TVxv1vV.png)
+![pureComponentExample](assets/pureComponentExample.png)
 
 * 我第一次去触发父组件中按钮button的onClick点击事件，由于传过去`Person`子组件的age从20更改到了21，子组件`Person`重渲染了一次，OK的；
 * 而后我再去触发父组件中按钮button的onClick点击事件，传过`Person`子组件的age和name都没发生改变，还是上一次的20和"小白"，由于用了`React.PureComponent`，解决了如果用`React.Component`造成的子组件重渲染问题；
@@ -738,7 +840,7 @@ class Person extends React.PureComponent{
 }
 ```
 
-![](https://i.imgur.com/R05WQUr.png)
+![pureComponentFlaw](assets/pureComponentFlaw.png)
 
 * 我触发多少次父组件的按钮onClick点击事件，子组件`Person`就会重渲染多少次，虽然传过去的一直都是{name:"小白",age:"20"}；
 
@@ -807,7 +909,7 @@ console.log(isEqual,"isEqual")//输出的是false
 #### §<a name="use-boundary"> 6.1使用 immutable 的边界性问题</a>
 > 应用Immutable.js于React/Redux中，我们有必要来划分一下边界，哪些数据需要使用不可变数据，哪些数据要使用原生js数据结构，哪些地方需要做互相转换；
 
-![](https://i.imgur.com/OLV6hRT.png)
+![immutableBoundary](assets/immutableBoundary.png)
 
 * 在redux中，全局state必须是immutable的，这点毋庸置疑是我们使用immutable来优化redux的核心；
 * 组件props是通过redux的connect从state中获得的，并且引入immutableJS的另一个目的是减少组件shouldComponentUpdate中不必要渲染，shouldComponentUpdate中比对的是props，如果props是原生JS就失去了优化的意义；
@@ -958,13 +1060,13 @@ class Person extends BaseComponent{
 }
 ```
 
-![](https://i.imgur.com/GJ9XYdG.png)
+![immutableUse](assets/immutableUse.png)
 
 可以明显看到，仅重新渲染了age由20更改到21这一次！
 
 使用 Immutable 后，如下图，当红色节点的 state 变化后，不会再渲染树中的所有节点，而是只渲染图中绿色的部分：
 
-![](https://i.imgur.com/AIfabVF.png)
+![immutableReRender](assets/immutableReRender.png)
 
 
 你也可以不用自己去手动封装shouldComponentUpdate或者在组件中重写，可以用封装好了的[react-immutable-render-mixin](https://github.com/jurassix/react-immutable-render-mixin)这个库就好了，还可以用es7的装饰器，哈哈哈
@@ -1061,3 +1163,4 @@ const store = createStore(rootReducer, initialState);
 >* [React.PureComponent 配上 ImmutableJS 才更有意义](https://www.timefly.cn/react-purecomponent-with-immutablejs/)
 >* [react如何性能达到最大化(前传)，暨react为啥非得使用immutable.js](https://segmentfault.com/a/1190000004290333)
 >* [如何用React+Redux+ImmutableJS进行SPA开发](http://yunlaiwu.github.io/blog/2016/12/01/react+redux+immutablejs/)
+>* [React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
