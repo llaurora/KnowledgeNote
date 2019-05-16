@@ -73,7 +73,8 @@
 
 JS中的引用数据类型自然也有优点，优点在于频繁的操作数据都是在原对象的基础上修改，不会创建新对象，从而可以有效的利用内存，不会浪费内存，这种特性称为**mutable**（可变），但恰恰它的优点也是它的缺点，太过于灵活多变在复杂数据的场景下也造成了它的不可控性，假设一个对象在多处用到，在某一处不小心修改了数据，其他地方很难预见到数据是如何改变的
 
-~**提出解决方案：** 针对上面这些情况，会想着数据要是不可变就好了（数据b来源(Copy)于数据b，但a或者b的操作互不影响，数据可控）。（在“场景二”里面再结合补充“引用数据类型赋值(=)和浅拷贝的区别”）
+~**提出解决方案：** 针对上面这些情况，会想着数据要是不可变就好了（对象b来源(Copy)于对象a，但a和b的操作互不影响，数据可控）。（在“场景二”里面再结合补充“引用数据类型赋值(=)和浅拷贝的区别”）
+
 *  一：会想到es6的`object.assign()`或者Rest参数(...)；`let obj1={a:1};let obj2=object.assign({},obj1);console.log(obj1.a)//这儿输出的是1`，咋看之下以为`object.assign()`是深拷贝,但其实`object.assign()`属于伪深拷贝；`Rest参数`和`object.assign()`一样属于伪深拷贝；
 >Object.assign()属于伪深拷贝（第一层的深拷贝，嵌套层的浅拷贝）
 ```javascript
@@ -191,7 +192,30 @@ console.log(m===n);//输出的是true（m和n指向于堆里的对象是同一�
 
 * 浅拷贝是只复制对象（比如有let m={a:10,b:{c:20}}）的第一层，第一层的操作互不影响，但嵌套层的引用数据类型指向的还是于堆中的同一个对象，还是会相互影响，像Object.assign()这类方法如果非要严格的算浅拷贝还是深拷贝，其属于浅拷贝。
 
- Object.freeze 和 ES6 中新加入的 const 都可以达到防止对象被篡改的功能，但它们是 shallowCopy （浅拷贝）的，对象层级一深就要特殊处理了。
+ Object.freeze 和 ES6 中新加入的 const 都可以达到防止对象被篡改的功能，但和这儿讨论的数据可控不大相关(对象b来源于对像a，但a和b的操作互不影响)。
+
+```javascript
+const m = {a:1,b:{c:2}};
+const n = m;
+n.a = 100;
+console.log(m,n); //输出a为{a:100,b:{c:2}},b为{a:100,b:{c:2}}
+```
+
+**const本质：**`const`实际上保证的，并不是变量的值不得改动，而是变量指向的那个内存地址所保存的数据不得改动。对于基本数据类型来说（数值、字符串、布尔值），值就保存在变量指向的那个栈内存地址，因此等同于常量。但对于引用数据类型来说（主要是对象和数组），用赋值操作符"="赋值标识符的时候只是赋值给了标识符一个指向堆内存中实际数据一个地址指针，`const`只能保证这个指针是固定的（即总是指向同一个固定的堆内存地址），至于它指向的数据结构是不是可变的，就完全不能控制了。因此，将一个对象声明为常量必须非常小心
+
+```javascript
+const foo = {
+  name: 'joker',
+  age: 20,
+};
+foo.age = 22; // Ok的，可以成功
+console.log(foo); // {name: "joker", age: 22}
+
+// 将foo指向另一个对象，就会报错
+foo = {}; // Uncaught TypeError: Assignment to constant variable
+```
+
+[JS作用域及闭包]([https://github.com/DlLucky/know-how/blob/master/essay%20note/Js%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%8F%8A%E9%97%AD%E5%8C%85.md](https://github.com/DlLucky/know-how/blob/master/essay note/Js作用域及闭包.md))
 
  而像上面的这个引用数据类型赋值(=)充其量能算是“引用”，而不是真正的浅拷贝。而浅拷贝之于引用数据类型赋值(=)的不同在于，浅拷贝的得到的对象值是在堆里面给重新生成了一个对象，前后两个对象引用的并不是同一个对象，两相比较的话，输出的会是false;
 
@@ -250,7 +274,7 @@ console.log(obj3); //{10,2000,c:{d:3000,e:4000}}
 ####  1、immutable.js
 Immutable.js本质上是一个JavaScript的持久化数据结构的库 ，但是由于同期的React太火，并且和React在性能优化方面天衣无缝的配合，导致大家常常把它们两者绑定在一起。
 
-Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现，但没有被默认放到 React 工具集里（React 提供了简化的 Helper）。它从头开始实现了完全的 `Persistent Data Structure（持久化数据结构）`，通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术来实现`Structural Sharing（结构共享）`。所有的更新操作都会返回新的值，但是在内部结构是共享的，来减少内存占用(和垃圾回收的失效)，且数据结构和方法非常丰富（完全不像JS出身的好不好）。像 Collection、List、Map、Set、Record、Seq。有非常全面的map、filter、groupBy、reduce``find函数式操作方法。同时 API 也尽量与 Object 或 Array 类似。
+Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现，但没有被默认放到 React 工具集里（React 提供了简化的 Helper）。它从头开始实现了完全的 `Persistent Data Structure（持久化数据结构）`，通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术来实现`Structural Sharing（结构共享）`。所有的更新操作都会返回新的值，但是在内部结构是共享的，来减少内存占用(和垃圾回收的失效)，且数据结构和方法非常丰富（完全不像JS出身的好不好），像 Collection、List、Map、Set、Record、Seq。有非常全面的map、filter、groupBy、reduce、find函数式操作方法。同时 API 也尽量与 Object 或 Array 类似。
 
 其中有 3 种最重要的数据结构说明一下：
 * Map：键值对集合，对应于 Object，ES6 也有专门的 Map 对象；
@@ -258,7 +282,7 @@ Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现�
 * Set：无序且不可重复的列表
 
 #### 2、seamless-immutable
-与` Immutable.js `学院派的风格不同，`seamless-immutable` 并没有实现完整的` Persistent Data Structure（持久化数据结构）`，而是使用 Object.defineProperty（因此只能在 IE9 及以上使用）扩展了 JavaScript 的 Array 和 Object 对象来实现，只支持 Array 和 Object 两种数据类型，API 基于与 Array 和 Object 操持不变。代码库非常小，压缩后下载只有 2K。而 Immutable.js 压缩后下载有 16K;
+与` Immutable.js `学院派的风格不同，`seamless-immutable` 并没有实现完整的` Persistent Data Structure（持久化数据结构）`，而是使用 Object.defineProperty（因此只能在 IE9 及以上使用）扩展了 JavaScript 的 Array 和 Object 对象来实现，只支持 Array 和 Object 两种数据类型，API 基本与 Array 和 Object 操持不变。代码库非常小，压缩后下载只有 2K。而 Immutable.js 压缩后下载有 16K;
 
 seamless-immutable的实现依赖于ECMAScript 5 的一些特性，如Object.defineProperty 和 Object.freeze，因此会在浏览器兼容性方面有所欠缺：
 
@@ -284,8 +308,8 @@ console.log(Immutable.is(obj1,obj2)); //输出false（通过hashCode比较键值
 console.log(obj1===obj2);  //输出false（obj1和obj2指向于堆里的对象不是同一个，所以为false）
 
 // 使用  seamless-immutable.js 后
-import SImmutable from "seamless-immutable";
-let obj1=SImmutable({a:{b:1}});
+import Immutable from "seamless-immutable";
+let obj1=Immutable({a:{b:1}});
 let obj2=obj1.merge({a:{b:2}}); // 使用 merge 赋值
 console.log(obj1.a.b);  //像原生Object一样取值，输出的是1
 console.log(obj1===obj2);  //输出false（obj1和obj2指向于堆里的对象不是同一个，所以为false）
@@ -327,7 +351,7 @@ let data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
 
 如果更改了了tea字段 3 为 14,那么只需改变四个节点,来更新形成新的树, 这就是结构共享。
 
-![trieAddOne2](assets/trieAddOne2.jpeg)
+![trieAddOne2](assets/trieAddOne2.jpg)
 
 其实，在`Immutable.js`中的"节点"并不能简单的理解成对象中的"key"，其内部使用了`Trie(字典树)`数据结构，`Immutable.js`会把Immutable对象所有的key进行hash映射，将得到的hash值转化为二进制，从后向前每5位进行分割后再转化为`Trie树`，我们再来看个例子，假如有个Immutable对象zoo：
 
