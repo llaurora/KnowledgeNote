@@ -1,0 +1,98 @@
+@import "../../asset/style/dominant";
+$dialog-border-radius:5px;
+$dialog-header-height:50px;
+
+div.modal {
+  background-color: $dialog-shadow-bgColor;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  div.modalArea {
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: $dialog-border-radius;
+    box-shadow: $dialog-box-shadow-color;
+
+    header {
+      height: $dialog-header-height;
+      padding: 0 15px;
+      background-color: $dialog-header-bgColor;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+      border-bottom: 1px solid $dialog-border-color;
+
+      p {
+        font-size: 18px;
+        font-weight: 400;
+        color: $dialog-header-title-fontColor;
+      }
+
+      .cancleSign::after {
+        font-size: 18px;
+        color: $dialog-header-title-fontColor;
+        transition: all 0.1s linear;
+        content: "\2716";
+      }
+
+      .cancleSign:hover::after {
+        color: $dominant-hue;
+        transition: all 0.1s linear;
+        cursor: pointer;
+      }
+    }
+
+    section {
+      padding: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      border-top: 1px solid $dialog-line-color;
+
+      button {
+        color: $dialog-btn-fontColor;
+        height: 28px;
+        padding: 0 10px;
+        background-color: transparent;
+        border: 1px solid $dialog-btn-border-color;
+        border-radius: 5px;
+        outline: 0;
+        transition: all 0.1s linear;
+        cursor: pointer;
+
+        &.btnConfirm {
+          color: white;
+          margin-right: 10px;
+          background-color: $dominant-hue;
+          border: 1px solid $dominant-hue;
+          transition: all 0.1s linear;
+
+          &:hover {
+            background-color: $btn-hue-hover-color;
+            border: 1px solid $btn-hue-hover-color;
+            transition: all 0.1s linear;
+          }
+        }
+
+        &.btn-cancel {
+          &:hover {
+            color: $dominant-hue;
+            border: 1px solid $dominant-hue;
+            transition: all 0.1s linear;
+          }
+        }
+      }
+    }
+  }
+}

@@ -27,32 +27,32 @@
 #### ⊙ 场景一：关于数据不可变
 ##### 例1：
 ```javascript
- let data={key:"value"};
+ const data={key:"value"};
  func(data);
  console.log(data)//"猜猜会打印什么？"
 
 //function func(data) {
 	//data.key="data的key被改变了"
-   //let data1=Object.assign(data,{name:"名字"})
+   //const data1=Object.assign(data,{name:"名字"})
 //}
 ```
 **不查看func方法，不知道它对data做了什么，无法确认会打印什么。但如果data是Immutable，你可以确定打印的就是value**
 ```javascript
- let data=Immutable.Map({key:"value"});
+ const data=Immutable.Map({key:"value"});
  func(data);
  console.log(data.get("key"))//打印的是Value
 ```
 ##### 例2：
 ```javascript
-    let obj1={a:1,b:2,c:{d:3}};
-    let obj2=obj1;
+    const obj1={a:1,b:2,c:{d:3}};
+    const obj2=obj1;
     obj2.a=11;
     console.log(obj1.a)//输出的是11
 ```
 **而如果用Immutable.js的话**
 ```javascript
-    let obj1=Immutable.fromJS({a:1,b:2,c:{d:3}});
-    let obj2=obj1.merge(obj1);
+    const obj1=Immutable.fromJS({a:1,b:2,c:{d:3}});
+    const obj2=obj1.merge(obj1);
     obj2=obj2.updateIn(["c","d"],()=>300);
     console.log(obj1.toJS(),obj2.toJS())//{a:1,b:2,c:{d:3}}，{a:1,b:2,c:{d:300}}
 ```
@@ -65,8 +65,8 @@
 
 ![jsAssign1](assets/jsAssign1.png)
 
-* let m={a:10,b:20}在进行"="赋值的时候是把存放于栈里面的标识符obj1通过引用指针指向了存放于堆里面的{a:10,b:2};
-* 当let n=m的时候只是赋予n一个新的内存地址，但这个新的内存地址指向的还是存放于堆里面的同一个{a:10,b:2};
+* const m={a:10,b:20}在进行"="赋值的时候是把存放于栈里面的标识符obj1通过引用指针指向了存放于堆里面的{a:10,b:2};
+* 当const n=m的时候只是赋予n一个新的内存地址，但这个新的内存地址指向的还是存放于堆里面的同一个{a:10,b:2};
 * 所以当更改n的a属性的时候（n.a=100），输出的m的a属性也会发生变化
 
 ![jsAssign2](assets/jsAssign2.png)
@@ -75,60 +75,60 @@ JS中的引用数据类型自然也有优点，优点在于频繁的操作数据
 
 ~**提出解决方案：** 针对上面这些情况，会想着数据要是不可变就好了（对象b来源(Copy)于对象a，但a和b的操作互不影响，数据可控）。（在“场景二”里面再结合补充“引用数据类型赋值(=)和浅拷贝的区别”）
 
-*  一：会想到es6的`object.assign()`或者Rest参数(...)；`let obj1={a:1};let obj2=object.assign({},obj1);console.log(obj1.a)//这儿输出的是1`，咋看之下以为`object.assign()`是深拷贝,但其实`object.assign()`属于伪深拷贝；`Rest参数`和`object.assign()`一样属于伪深拷贝；
+*  一：会想到es6的`object.assign()`或者Rest参数(...)；const obj1={a:1};const obj2=object.assign({},obj1);console.log(obj1.a)//这儿输出的是1`，咋看之下以为`object.assign()`是深拷贝,但其实`object.assign()`属于伪深拷贝；`Rest参数`和`object.assign()`一样属于伪深拷贝；
 >Object.assign()属于伪深拷贝（第一层的深拷贝，嵌套层的浅拷贝）
 ```javascript
-let obj1={
+const obj1={
     a:1,
     b:2,
     c:{
         d:3
     }
    };
- let obj2=Object.assign({},obj1);
+ const obj2=Object.assign({},obj1);
  obj2.a=11;
  console.log(obj1.a); //输出的还是1，第一层深拷贝
 ```
 ```javascript
-let obj1={
+const obj1={
     a:1,
     b:2,
     c:{
         d:3
     }
    };
- let obj2=Object.assign({},obj1);
+ const obj2=Object.assign({},obj1);
  obj2.c={f:4};
  console.log(obj1.c); //输出的还是{d:3}，第一层深拷贝
 ```
 ```javascript
-let obj1={
+const obj1={
   a:1,
   b:2,
   c:{
       d:3
      }
    };
- let obj2=Object.assign({},obj1);
+ const obj2=Object.assign({},obj1);
  obj2.c.d=44;
  console.log(obj1.c.d); //输出的是44而不是3，嵌套层是浅拷贝
 ```
 ```javascript
-let obj1={
+const obj1={
     a:1,
     b:2,
     c:{
         d:3
     }
 };
-let obj2=Object.assign({},obj1);
+const obj2=Object.assign({},obj1);
 obj2.a=11;
 obj2.c.d=44;
 console.log(obj1,obj2); //输出的是{a:1,b:2,c:{d:44}}，{a:11,b:2,c:{d:44}}
 ```
 ```javascript
-let m={a:1,b:2,c:{d:3}};
-let n={...m};
+const m={a:1,b:2,c:{d:3}};
+const n={...m};
 n.c.d=300;
 console.log(m.c.d) //输出的是300
 ```
@@ -144,12 +144,12 @@ console.log(m.c.d) //输出的是300
 {a:1,b:2,c:3}==={a:1,b:2,c:3}; // false
 [1,2,3] === [1,2,3]; // false
 ```
-就如上面这样的例子，我们其实是想着左右完全相同，想返回的是一个true；至于原因，对于JS引用数据类型的===比较，比较的是**其引用是否指向同一个对象**；
+就如上面这样的例子，我们其实是想着左右完全相同，想返回的是一个true；至于原因，对于JS引用数据类型的===比较，比较的是**其引用是否指向同一个对象**（在计算机科学中, 对象是指内存中的可以被 [标识符](https://developer.mozilla.org/en-US/docs/Glossary/Identifier)引用的一块区域）；
 
 ```javascript
-let obj1={a:1};
-let obj2=obj1;
-let obj3={a:1};
+const obj1={a:1};
+const obj2=obj1;
+const obj3={a:1};
 obj2.a=100;
 console.log(obj1===obj2);//输出的是true（obj1和pbj2指向于堆中的是同一个对象，所以为true）
 console.log(obj1===obj3);//输出的是false（obj1和pbj2指向于堆中的不是同一个对象，所以为false）
@@ -168,8 +168,8 @@ function isEqual(a,b) {
        }
        return result
    }
-let obj1={a:1,b:2,c:3};
-let obj2={a:1,b:2,c:3};
+const obj1={a:1,b:2,c:3};
+const obj2={a:1,b:2,c:3};
 console.log(isEqual(obj1,obj2)) //输出的是true
 ```
 暂且先不论这儿为啥采用immutable.js，用immutable.js的话，
@@ -181,16 +181,16 @@ console.log(m===n); //输出false（m和n指向于堆里的对象不是同一个
 ```
 
 ~**在这儿补充说下：**引用数据类型赋值(=)，浅拷贝和深拷贝的区别：
-* 引用数据类型赋值(=)操作（let m={a:10,b:20};let n=m;）是在栈里面重新给分配了一个内存地址，然后这个内存地址指向于堆里面的对象其实还是是同一个！
+* 引用数据类型赋值(=)操作（const m={a:10,b:20};let n=m;）是在栈里面重新给分配了一个内存地址，然后这个内存地址指向于堆里面的对象其实还是是同一个！
 ```javascript
-let m={a:10,b:20};
-let n=m;
+const m={a:10,b:20};
+const n=m;
 n.b=30;
 console.log(m===n);//输出的是true（m和n指向于堆里的对象是同一个，所以为true）
 ```
 ![jsAssign2](assets/jsAssign2-7028477.png)
 
-* 浅拷贝是只复制对象（比如有let m={a:10,b:{c:20}}）的第一层，第一层的操作互不影响，但嵌套层的引用数据类型指向的还是于堆中的同一个对象，还是会相互影响，像Object.assign()这类方法如果非要严格的算浅拷贝还是深拷贝，其属于浅拷贝。
+* 浅拷贝是只复制对象（比如有const m={a:10,b:{c:20}}）的第一层，第一层的操作互不影响，但嵌套层的引用数据类型指向的还是于堆中的同一个对象，还是会相互影响，像Object.assign()这类方法如果非要严格的算浅拷贝还是深拷贝，其属于浅拷贝。
 
  Object.freeze 和 ES6 中新加入的 const 都可以达到防止对象被篡改的功能，但和这儿讨论的数据可控不大相关(对象b来源于对像a，但a和b的操作互不影响)。
 
@@ -221,15 +221,15 @@ foo = {}; // Uncaught TypeError: Assignment to constant variable
 
 #####  例1：
 ```javascript
-let m={a: 10, b: 20};
-let n=Object.assign({}, m);
+const m={a: 10, b: 20};
+const n=Object.assign({}, m);
 console.log(m===n); //输出的是false（m和n指向于堆里的对象不是同一个，所以为false）
 ```
 
 #####  例2：
 ```javascript
 function shallowCopy(src){
-   let target={};
+   const target={};
    for (let key in src){
        if(src.hasOwnProperty(key)){
            target[key]=src[key];
@@ -238,7 +238,7 @@ function shallowCopy(src){
    return target;
 }
 
-let obj1={
+const obj1={
    a:10,
    b:20,
    c:{
@@ -246,8 +246,8 @@ let obj1={
        f:40
    }
 };
-let obj2=obj1;
-let obj3=shallowCopy(obj1);
+const obj2=obj1;
+const obj3=shallowCopy(obj1);
 
 obj2.a=1000;
 obj3.b=2000;
@@ -274,7 +274,7 @@ console.log(obj3); //{10,2000,c:{d:3000,e:4000}}
 ####  1、immutable.js
 Immutable.js本质上是一个JavaScript的持久化数据结构的库 ，但是由于同期的React太火，并且和React在性能优化方面天衣无缝的配合，导致大家常常把它们两者绑定在一起。
 
-Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现，但没有被默认放到 React 工具集里（React 提供了简化的 Helper）。它从头开始实现了完全的 `Persistent Data Structure（持久化数据结构）`，通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术来实现`Structural Sharing（结构共享）`。所有的更新操作都会返回新的值，但是在内部结构是共享的，来减少内存占用(和垃圾回收的失效)，且数据结构和方法非常丰富（完全不像JS出身的好不好），像 Collection、List、Map、Set、Record、Seq。有非常全面的map、filter、groupBy、reduce、find函数式操作方法。同时 API 也尽量与 Object 或 Array 类似。
+Facebook 工程师 Lee Byron 花费 3 年时间打造，与 React 同期出现，但没有被默认放到 React 工具集里（React 提供了简化的 Helper）。它从头开始实现了完全的 `Persistent Data Structure（持久化数据结构）`，通过使用[Vector Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术来实现`Structural Sharing（结构共享）`。所有的更新操作都会返回新的值，但是在内部结构是共享的，来减少内存占用(和垃圾回收的失效)，且数据结构和方法非常丰富（完全不像JS出身的好不好），像 Collection、List、Map、Set、Record、Seq。有非常全面的map、filter、groupBy、reduce、find函数式操作方法。同时 API 也尽量与 Object 或 Array 类似。
 
 其中有 3 种最重要的数据结构说明一下：
 * Map：键值对集合，对应于 Object，ES6 也有专门的 Map 对象；
@@ -293,24 +293,24 @@ seamless-immutable的实现依赖于ECMAScript 5 的一些特性，如Object.def
 下面上代码来感受一下两者的不同：
 ```javascript
 // 原来的写法
-let obj1={a: {b: 1}};
-let obj2=obj1;
+const obj1={a: {b: 1}};
+const obj2=obj1;
 obj2.a.b=2;
 console.log(obj1.a.b); //输出的是2
 console.log(obj1===obj2); //输出的是true（obj1和obj2指向于堆里的对象是同一个，所以为true）
 
 // 使用 immutable.js 后
 import Immutable from "immutable";
-let obj1=Immutable.fromJS({a:{b:1}});
-let obj2=obj1.setIn(["a","b"],2); // 使用 setIn 赋值
+const obj1=Immutable.fromJS({a:{b:1}});
+const obj2=obj1.setIn(["a","b"],2); // 使用 setIn 赋值
 console.log(obj1.getIn(["a","b"])); //使用 getIn 取值，输出的是1
 console.log(Immutable.is(obj1,obj2)); //输出false（通过hashCode比较键值）
 console.log(obj1===obj2);  //输出false（obj1和obj2指向于堆里的对象不是同一个，所以为false）
 
 // 使用  seamless-immutable.js 后
 import Immutable from "seamless-immutable";
-let obj1=Immutable({a:{b:1}});
-let obj2=obj1.merge({a:{b:2}}); // 使用 merge 赋值
+const obj1=Immutable({a:{b:1}});
+const obj2=obj1.merge({a:{b:2}}); // 使用 merge 赋值
 console.log(obj1.a.b);  //像原生Object一样取值，输出的是1
 console.log(obj1===obj2);  //输出false（obj1和obj2指向于堆里的对象不是同一个，所以为false）
 ```
@@ -343,7 +343,7 @@ structural sharing （结构共享）即如果对象树中一个节点发生变�
 
 ##### 补充：
 ```javascript
-let data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
+const data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
 ```
 根据trie结构,存储的结构类似于
 
@@ -353,7 +353,7 @@ let data={to:7,tea:3,ted:4,ten:12,A:15,i:11,in:5,inn:9}
 
 ![trieAddOne2](assets/trieAddOne2.jpg)
 
-其实，在`Immutable.js`中的"节点"并不能简单的理解成对象中的"key"，其内部使用了`Trie(字典树)`数据结构，`Immutable.js`会把Immutable对象所有的key进行hash映射，将得到的hash值转化为二进制，从后向前每5位进行分割后再转化为`Trie树`，我们再来看个例子，假如有个Immutable对象zoo：
+其实，在`Immutable.js`中的"节点"并不能简单的理解成对象中的"key"，其内部使用了`Vector Trie(Trie字典树的一种)`数据结构，`Immutable.js`会把Immutable对象所有的key进行hash映射，将得到的hash值转化为二进制，从后向前每5位进行分割后再转化为`Trie树`，我们再来看个例子，假如有个Immutable对象zoo：
 
 ```javascript
 const zoo = Immutable.fromJS({
@@ -375,13 +375,17 @@ const zoo = Immutable.fromJS({
 
 ![trieZoo](assets/trieZoo.jpg)
 
-当然实际的Trie树会根据实际对象进行剪枝处理，没有值的分支会被剪掉，不会每个节点都长满了32个子节点。
+当然实际的`Vector Trie`树会根据实际对象进行剪枝处理，没有值的分支会被剪掉，不会每个节点都长满了32个子节点。
 
 当比如需要将 zoo.frog 由 🐸 改成 👽 ，发生变动的节点只有上图中绿色的几个，其他的节点直接复用，这样比深拷贝产生的100万个节点效率高了很多。
 
-![trieZooChange](assets/trieZooChange.jpg)
+![trieZooChange](../../../../Desktop/trieZooChange.jpg)
 
-而正是因为Immutable.js通过使用[Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术实现了`Structural Sharing（结构共享）`，继而带了两大好处：
+下图中key: **t0143c274**，通过 hash 后得到的值为 621051904（与 md5 不同，比如 hash("a") == 0，hash("c") == 2），转化为二进制后，值是 10010 10000 01001 00000 00000 00000，按照 5bit 切分，寻址路径就如下图所示：
+
+![todosTrie](assets/todosTrie.png)
+
+而正是因为Immutable.js通过使用[Vector Trie 数据结构](https://blog.csdn.net/qq_33583069/article/details/51942534)这样的先进技术实现了`Structural Sharing（结构共享）`（可参考[深入探究immutable.js的实现机制](https://segmentfault.com/a/1190000016404944)加深理解），继而带了两大好处：
 
 ##### 2.1：节省内存，避免CPU和内存的浪费
 
@@ -392,27 +396,27 @@ immutable.js 使用了`结构共享(Structure Sharing)` 会尽量复用内存（
 ##### 例1：
 
 ```javascript
-let obj1=Immutable.fromJS({
+const obj1=Immutable.fromJS({
          a:1,
          b:{
              c:3
          }
      });
-let obj2=obj1.set("a",100);
+const obj2=obj1.set("a",100);
 console.log(obj1===obj2);//输出的是false（obj1和obj2指向于堆里的对象并不是同一个，所以为false）
 console.log(obj1.get("b")===obj2.get("b"));//输出的是true（obj1.get("b")和obj2.get("b")指向于堆里的对象是同一个，共享了没有变化的b节点，所以为true）
 ```
 
 ##### 例2：
 ```javascript
-let obj1=Immutable.fromJS({
+const obj1=Immutable.fromJS({
          a:1,
          b:{
              c:3
          }
      });
-let obj2=obj1.set("a",100);
-let obj3=obj1.set("a",1);
+const obj2=obj1.set("a",100);
+const obj3=obj1.set("a",1);
 console.log(obj1===obj2);//输出的是false（obj1和obj2指向于堆里的对象并不是同一个，所以为false）
 console.log(obj1===obj3);//输出的是true（虽然obj3进行了一顿操作，然而数据并没有改变,避免创建了新对象，复用了内存，所以obj1和obj3指向于堆里的对象还是同一个，所以为true）
 ```
@@ -422,25 +426,25 @@ console.log(obj1===obj3);//输出的是true（虽然obj3进行了一顿操作，
 
 两个Immutable 对象可以使用"===" 来比较，这样是直接比较两个Immutable 对象是否指向于堆里的同一个对象，性能最好。但即使两个对象的值是一样的，也会返回 false：
 ```javascript
-let obj1=Immutable.Map({a:1,b:1,c:1});
-let obj2=Immutable.Map({a:1,b:1,c:1});
+const obj1=Immutable.Map({a:1,b:1,c:1});
+const obj2=Immutable.Map({a:1,b:1,c:1});
 console.log(obj1===obj2); //输出的是false（obj1和obj2指向于堆里的对象并不是同一个，所以为false）
 ```
 为了直接比较对象的值，immutable.js 提供了 Immutable.is() 来做『值比较』。
 
-Immutable.is() 比较的是两个对象的 hashCode 或 valueOf（对于 JavaScript 对象）。由于 immutable.js 内部使用了 Trie 数据结构来存储，只要两个对象的 hashCode 相等，值就是一样的。这样的算法避免了深度遍历比较，性能非常好。
+Immutable.is() 比较的是两个对象的 hashCode 或 valueOf（对于 JavaScript 对象）。由于 immutable.js 内部使用了 Trie 数据结构来存储，只要两个对象的 hashCode 相等，值就是一样的，这样的算法避免了深度遍历比较，性能非常好（你可以使用Immutable.hash()方法去查看一看Immutable对象的hashCode值）。
 
 
 结合上面2点好处，来看下下面这个例子，以更好的理解structural sharing （结构共享）
 ```javascript
-let obj1=Immutable.fromJS({
+const obj1=Immutable.fromJS({
            a:1,
            b:{
                c:3
            }
        });
-let obj2=obj1.set("a",100);
-let obj3=Immutable.fromJS({
+const obj2=obj1.set("a",100);
+const obj3=Immutable.fromJS({
     a:1,
     b:{
         c:3
@@ -461,7 +465,7 @@ console.log(Immutable.is(obj1,obj3)); //输出的是true(通过比较obj1和obj3
 
 这个特性非常的有趣，这里的lazy指的是什么？很难用语言来描述，我们看一个demo，看完你就明白了
 
-![supportLazyOperation](assets/supportLazyOperation.png)
+![supportLazyOperation](../../../../Desktop/supportLazyOperation.png)
 
  这段代码的意思就是，数组先取奇数，然后再对基数进行平方操作，然后在console.log第2个数，同样的代码，用immutable的seq对象来实现，filter只执行了3次，但原生执行了8次。
    
@@ -470,25 +474,40 @@ console.log(Immutable.is(obj1,obj3)); //输出的是true(通过比较obj1和obj3
 想想，如果在实际业务中，数据量非常大，如在我们点餐业务中，商户的菜单列表可能有几百道菜，一个array的长度是几百，要操作这样一个array，如果应用惰性操作的特性，会节省非常多的性能
 
 #### § <a name="main-advantage">3.2 Immutable.js 优点</a>
-##### 1. Immutable 降低了 Mutable 带来的复杂度 
+
+##### 1. Immutable 降低了 Mutable 带来的复杂度
+
 参考"场景一"例1
+
 ##### 2. 节省内存，性能提升
+
 参考"Immutable.js 主要的三大特性之结构共享"
+
 ##### 3. Undo/Redo，Copy/Paste，甚至时间旅行这些功能做起来小菜一碟
+
 因为每次数据都是不一样的，只要把这些数据放到一个数组里储存起来，想回退到哪里就拿出对应数据即可，很容易开发出撤销重做这种功能。
+
 ##### 4. 并发安全
+
 传统的并发非常难做，因为要处理各种数据不一致问题，因此『聪明人』发明了各种锁来解决。但使用了 Immutable 之后，数据天生是不可变的，并发锁就不需要了。
 
 然而现在并没什么卵用，因为 JavaScript 还是单线程运行的啊。但未来可能会加入，提前解决未来的问题不也挺好吗？
+
 ##### 5. 拥抱函数式编程
+
 Immutable 本身就是函数式编程中的概念，纯函数式编程比面向对象更适用于前端开发。因为只要输入一致，输出必然一致，这样开发的组件更易于调试和组装。
 
 像 ClojureScript，Elm 等函数式编程语言中的数据类型天生都是 Immutable 的，这也是为什么 ClojureScript 基于 React 的框架 --- Om 性能比 React 还要好的原因。
 
 ## § <a name="main-disadvantage">3.3 Immutable.js 缺点</a>
 ##### 1. 需要学习新的 API
+
 ##### 2. 增加了资源文件大小
-##### 3.容易与原生对象混淆
+
+##### 3. 初始化数据时逊色于原生
+
+##### 4. 容易与原生对象混淆
+
 这点是我们使用 Immutable.js 过程中遇到最大的问题。写代码要做思维上的转变。
 
 虽然 Immutable.js 尽量尝试把 API 设计的原生对象类似，有的时候还是很难区别到底是 Immutable 对象还是原生对象，容易混淆操作。
@@ -503,18 +522,18 @@ Immutable 中的 Map 和 List 虽对应原生 Object 和 Array，但操作非常
 * 3.使用 Immutable.fromJS 而不是 Immutable.Map 或 Immutable.List 来创建对象，这样可以避免 Immutable 和原生对象间的混用。
 ```javascript
 //使用 Immutable.fromJS
-let obj=Immutable.fromJS({
+const obj=Immutable.fromJS({
 	a:1,
 	b:2,
 	c:{
 	    d:3
 	}
 });
-let getVal=obj.get("c");
+const getVal=obj.get("c");
 console.log(getVal) //getVal是Immutable对象
 
 //使用 Immutable.Map
-let obj2=Immutable.Map({
+const obj2=Immutable.Map({
     a:1,
     b:2,
     c:{
@@ -530,6 +549,7 @@ console.log(getVal) //getVal是JS原生对象{d:3}
 而seamless-immutable虽然数据结构和API不如Immutable.js丰富，但是对于只想使用Immutable Data来对React进行优化以避免重复渲染的我们来说，已经是绰绰有余了。而且Array和Object原生的方法等都可以直接使用，原有项目改动极小。
 
 ##  § <a name="immutable-notice">3.4 Immutable.js使用过程中的一些注意点</a>
+
 * 1.fromJS和toJS会深度转换数据，随之带来的开销较大，尽可能避免使用，单层数据转换使用Map()和List()；
 
 （做了个简单的fromJS和Map性能对比，同等条件下，分别用两种方法处理1000000条数据，可以看到fromJS开销是Map的4倍）
@@ -561,23 +581,23 @@ console.log(arr.toJS()) //[1,2,3,4,5]
 * 4.引入immutablejs后，不应该再出现对象数组拷贝的代码(如下举例)；
 ```javascript
 //es6对象复制
-var state = Object.assign({}, state, {
+const state = Object.assign({}, state, {
     key: value
 });
 
 //array复制
-var newArr = [].concat([1,2,3])
+const newArr = [].concat([1,2,3])
 ```
 
 * 5.获取深层深套对象的值时不需要做每一层级的判空；
 ```javascript
 //javascript
-var obj = {a:1}
-var res = obj.a.b.c   //error
+const obj = {a:1}
+const res = obj.a.b.c   //error
 
 //immutable
-var immutableData=immutable.fromJS({a:1})
-var res = immutableData.getIn(['a', 'b', 'c'])  //undefined
+const immutableData=immutable.fromJS({a:1})
+const res = immutableData.getIn(['a', 'b', 'c'])  //undefined
 ```
 
 * 6.immutable对象直接可以转JSON.stringify(),不需要显式手动调用toJS()转原生；
@@ -629,12 +649,13 @@ React的组件渲染分为初始化渲染（render）和更新渲染（re-render
 >  * React的优化是基于`shouldComponentUpdate`的，该生命周期默认返回true，所以一旦prop或state有任何变化，都会引起重新re-render
 
 #### §<a name="about-shouldComponentUpdate"> 4.2关于shouldComponentUpdate</a>
+
 **shouldComponentUpdate 是React性能优化的关键。**（联系"场景二"，『===值比较』）
 React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做数据比较。在优化之前，shouldComponentUpdate是默认返回true的，这导致任何时候触发任何的数据变化都会使React组件component重新渲染。这必然会导致资源的浪费和性能的低下——你可能会感觉比较原生的响应更慢。
 
 为了进一步说明问题，我们再引用一张官网的图来解释，如下图（ SCU表示shouldComponentUpdate，绿色表示返回true(需要更新)，红色表示返回false(不需要更新)；vDOMEq表示虚拟DOM比对，绿色表示一致(不需要更新)，红色表示发生改变(需要更新)）：
 
-![shouldComponentUpdate](assets/shouldComponentUpdate.png)
+![shouldComponentUpdate](../../../../Desktop/shouldComponentUpdate.png)
 
 根据渲染流程，首先会判断shouldComponentUpdate(SCU)是否需要更新。如果需要更新，则调用组件的render生成新的虚拟DOM，然后再与旧的虚拟DOM对比(vDOMEq)，如果对比一致就不更新，如果对比不同，则根据最小粒度改变去更新DOM；如果SCU不需要更新，则直接保持不变，同时其子元素也保持不变。
 
@@ -664,7 +685,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 
 * 使用return null而不是CSS的display:none来控制节点的显示隐藏。保证同一时间页面的DOM节点尽可能的少。
 
-* 请将方法的bind一律置于constructor（Component的render里不动态bind方法，方法都在constructor里bind好，如果要动态传参，方法可使用闭包返回一个最终可执行函数。如：showDelBtn(item) { return (e) => {}; }。如果每次都在render里面的jsx去bind这个方法，每次都要绑定会消耗性能。）
+* 请将方法的bind一律置于constructor或者使用es6的箭头函数，建议使用箭头函数（Component的render里不动态bind方法，方法都在constructor里bind好，如果要动态传参，方法可使用闭包返回一个最终可执行函数。如：showDelBtn(item) { return (e) => {}; }。如果每次都在render里面的jsx去bind这个方法，每次都要绑定会消耗性能。）
 
   > 这儿补充下React中两种绑定this的方法，参考链接：[React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
   >
@@ -674,16 +695,16 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
   >
   > ```javascript
   > class Comp extends React.Component {
-  >   constructor() {
-  >     super();
-  >     this.toggleButton = this.toggleButton.bind(this);
-  >   }
+  > constructor() {
+  >  super();
+  >  this.toggleButton = this.toggleButton.bind(this);
+  > }
   > 
-  >   toggleButton() {
-  >     this.setState(prevState => ({ toggle: !prevState.toggle }));
-  >   }
-  >   
-  >  ...
+  > toggleButton() {
+  >  this.setState(prevState => ({ toggle: !prevState.toggle }));
+  > }
+  > 
+  > ...
   > }
   > ```
   >
@@ -692,12 +713,12 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
   >
   > ```javascript
   > class Comp extends React.Component {
-  >  
-  >   toggleButton = ()=> {
-  >     this.setState(prevState => ({ toggle: !prevState.toggle }));
-  >   }
-  >   
-  >  ...
+  > 
+  > toggleButton = ()=> {
+  >  this.setState(prevState => ({ toggle: !prevState.toggle }));
+  > }
+  > 
+  > ...
   > }
   > ```
   >
@@ -709,19 +730,40 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
   >
   > * 当利用 `Public Class Fields`，使用 箭头函数 编写类方法，方法会声明在每个类实例上
   >
-  >   ```javascript
-  >   handler = () => {
-  >    	//
-  >   }
-  >   ```
+  > ```javascript
+  > handler = () => {
+  > 	//
+  > }
+  > ```
   >
   > * 而使用原本的类方法，方法会声明在 类的原型上面，所有实例都可复用
   >
   >   ```javascript
   >   handler() {
-  >    	//
+  >   	//
   >   }
   >   ```
+  >
+  > 确确实实是存在上面的差异，但是我们在React当中经常需要在函数里面访问this，用原本的类方法要访问到this需要在constructor里面利用 bind绑定到实例上，这样的话无异于用箭头函数编写类方法(声明现在每个实例上)，而且还在其原型上多了一个声明的方法；
+  >
+  > ```javascript
+  > class A {
+  >   constructor(){
+  >     this.fn = this.fn.bind(this);
+  >   }
+  >    fn(){
+  >     //...
+  >    }
+  > }
+  > 
+  > const a =new A();
+  > 
+  > console.log(A,a.hasOwnProperty("fn"));
+  > ```
+  >
+  > ![thisBind](assets/thisBind.jpg)
+  >
+  > 
 
 
 
@@ -770,7 +812,7 @@ class PageOne extends React.Component{
         })
     }
     render(){
-        let {count,name,age}=this.state;
+        const {count,name,age}=this.state;
         return(
             <ul className="pageOne">
                 <li>
@@ -824,16 +866,16 @@ class PageOne extends React.Component{
         this.increaseTimes=this.increaseTimes.bind(this);
     }
     increaseTimes(){
-        this.setState({
-            count:this.state.count+1,
+        this.setState(prevState => ({
+            count:prevState.count+1,
             person:{
                 name:"小白",
                 age:20
             }
-        })
+        }))
     }
     render(){
-        let {count,person}=this.state;
+        const {count,person}=this.state;
         return(
             <ul className="pageOne">
                 <li>
@@ -853,7 +895,7 @@ class Person extends React.PureComponent{
     }
     render(){
         console.log("我re-render了");
-        let {name,age}=this.props.person;
+        const {person:{name,age}=this.props;
         return(
             <li>
                 名字是：{name}，
@@ -915,7 +957,7 @@ OK！OK！ 看到了吧，shallowCompare 也是对 shallowEqual 的封装，所�
 * 1.如它的名字一样，这个方法只进行对象的浅比较，我们知道deepCompare是循环递归操作，开销会比较大，得不偿失的。
 * 2.比较对象属性的值，用的是 Object.is 方法;
 ```javascript
-let isEqual=Object.is(
+const isEqual=Object.is(
     {name:"小白",age:20},
     {name:"小白",age:20}
 );
@@ -981,30 +1023,31 @@ class BaseComponent extends React.Component {
         super(props, context, updater);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        const thisProps = this.props || {};
-        const thisState = this.state || {};
-        nextState = nextState || {};
-        nextProps = nextProps || {};
-
-        if (Object.keys(thisProps).length !== Object.keys(nextProps).length ||
-            Object.keys(thisState).length !== Object.keys(nextState).length) {
-            return true;
-        }
-
-        for (const key in nextProps) {
-            if (!is(thisProps[key], nextProps[key])) {
-                return true;
-            }
-        }
-
-        for (const key in nextState) {
-            if (!is(thisState[key], nextState[key])) {
-                return true;
-            }
-        }
-        return false;
+    shouldComponentUpdate(nextProps = {}, nextState = {}) {
+    const thisProps = this.props || {};
+    const thisState = this.state || {};
+    let isEqual = false;
+    if (
+      Object.keys(thisProps).length !== Object.keys(nextProps).length ||
+      Object.keys(thisState).length !== Object.keys(nextState).length
+    ) {
+      isEqual = true;
     }
+
+    Object.keys(nextProps).forEach(key => {
+      if (!is(thisProps[key], nextProps[key])) {
+        isEqual = true;
+      }
+    });
+
+    Object.keys(nextState).forEach(key => {
+      if (!is(thisState[key], nextState[key])) {
+        isEqual = true;
+      }
+    });
+
+    return isEqual;
+  }
 }
 
 export default BaseComponent;
@@ -1042,15 +1085,18 @@ class PageOne extends React.Component{
         this.increaseTimes=this.increaseTimes.bind(this);
     }
     increaseTimes(){
-        this.setState(({$state})=>(
-            {
-                $state:$state.update("count",()=>this.state.$state.get("count")+1)
-                             .update("person",()=>Map({name:"小白",age:21}))
-            }
-        ))
+        this.setState(({$state})=>({
+          $state:mergeDeep($state,{
+                count:$state.get('count')+1,
+                person:{
+                    name:"小白",
+                    age:21
+                }
+              })
+        }))
     }
     render(){
-        let {$state}=this.state;
+        const {$state}=this.state;
         return(
             <ul className="pageOne">
                 <li>
@@ -1073,7 +1119,7 @@ class Person extends BaseComponent{
     }
     render(){
         console.log("我re-render了");
-        let {$person}=this.props;
+        const {$person}=this.props;
         return(
             <li>
                 名字是：{$person.get("name")}，
@@ -1099,7 +1145,7 @@ class Person extends BaseComponent{
 import React from "react";
 import {immutableRenderDecorator} from "react-immutable-render-mixin";
 
-immutableRenderDecorator
+@immutableRenderDecorator
 class Person extends React.Component{
     constructor(props){
         super(props)
@@ -1133,7 +1179,7 @@ class Person extends React.Component{
     }
     render(){
         console.log("我re-render了");
-        let {$person}=this.props;
+        const {$person}=this.props;
         return(
             <li>
                 名字是：{$person.get("name")}，
@@ -1173,7 +1219,7 @@ const store = createStore(rootReducer, initialState);
 >* [【JS】深拷贝 vs 浅拷贝](https://zhuanlan.zhihu.com/p/29048537)
 >* [关于JavaScript的浅拷贝和深拷贝](http://www.cnblogs.com/Chen-XiaoJun/p/6217373.html)
 >* [js内存堆栈，递归原理以及浅拷贝和深拷贝的理解](https://zhuanlan.zhihu.com/p/24996104)
->* [数据结构之Trie树](https://blog.csdn.net/jfkidear/article/details/7547022)
+>* [剑指Offer——Trie树(字典树)](https://blog.csdn.net/sunhuaqiang1/article/details/52463257)
 >* [Trie实践：一种比哈希表更快的数据结构](https://blog.csdn.net/stevenkylelee/article/details/38343985)
 >* [精读 Immutable 结构共享](https://github.com/ascoders/blog/issues/20)
 >* [immutable入坑指南](http://www.aliued.com/?p=4175)
@@ -1188,3 +1234,7 @@ const store = createStore(rootReducer, initialState);
 >* [react如何性能达到最大化(前传)，暨react为啥非得使用immutable.js](https://segmentfault.com/a/1190000004290333)
 >* [如何用React+Redux+ImmutableJS进行SPA开发](http://yunlaiwu.github.io/blog/2016/12/01/react+redux+immutablejs/)
 >* [React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
+>* [JavaScript 数据类型和数据结构](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Data_structures)
+>*  [唠叨一下js对象与哈希表那些事]([https://github.com/qieguo2016/algorithm/blob/master/md/js%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%93%88%E5%B8%8C%E8%A1%A8.md](https://github.com/qieguo2016/algorithm/blob/master/md/js对象与哈希表.md))
+>* [JavaScript 对象与 Hash 表](https://lz5z.com/JavaScript-Object-Hash/)
+
