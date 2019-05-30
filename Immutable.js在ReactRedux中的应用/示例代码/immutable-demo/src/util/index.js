@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 
-export const formatData = (size = 10000) => {
+export const formatData = (size = 1000000) => {
   const obj = {};
   for (let i = 1; i <= size; i += 1) {
     obj[`key${i}`] = {

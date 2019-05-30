@@ -1235,6 +1235,6 @@ const store = createStore(rootReducer, initialState);
 >* [如何用React+Redux+ImmutableJS进行SPA开发](http://yunlaiwu.github.io/blog/2016/12/01/react+redux+immutablejs/)
 >* [React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
 >* [JavaScript 数据类型和数据结构](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Data_structures)
->*  [唠叨一下js对象与哈希表那些事]([https://github.com/qieguo2016/algorithm/blob/master/md/js%E5%AF%B9%E8%B1%A1%E4%B8%8E%E5%93%88%E5%B8%8C%E8%A1%A8.md](https://github.com/qieguo2016/algorithm/blob/master/md/js对象与哈希表.md))
+>*  [唠叨一下js对象与哈希表那些事](https://segmentfault.com/a/1190000007692754)
 >* [JavaScript 对象与 Hash 表](https://lz5z.com/JavaScript-Object-Hash/)
 
