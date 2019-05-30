@@ -1,0 +1,73 @@
+@import '../../asset/style/dominant';
+$login-input-height: 30px;
+$login-button-width: 180px;
+
+#loginArea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > ul {
+    &.loginContent {
+      width: 340px;
+      min-height: 246px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      > li {
+        &.title {
+          font-size: 32px;
+          font-weight: 700;
+        }
+
+        &.userItemBox {
+          width: 70%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          input {
+            width: 100%;
+            height: $login-input-height;
+            border: none;
+            border-bottom: 1px solid;
+            line-height: $login-input-height;
+
+            &:first-child {
+              margin-bottom: 20px;
+            }
+          }
+        }
+
+        &.loading {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          > img {
+            margin-right: 5px;
+          }
+        }
+
+        &.loginBotton {
+          > button {
+            width: $login-button-width;
+            height: $login-input-height;
+            border: 1px solid;
+            border-radius: 8px;
+            letter-spacing: 1px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

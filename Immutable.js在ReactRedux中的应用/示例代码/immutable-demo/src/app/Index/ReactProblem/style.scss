@@ -1,0 +1,51 @@
+@import "../../../asset/style/dominant";
+
+.card {
+  padding: 10px 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+
+  > p.discribe {
+    font-size: 14px;
+    text-indent: 26px;
+    color: red;
+    margin-right: 10px;
+  }
+
+  > hr {
+    width: 90%;
+    height: 0;
+    margin: 10px 0 20px;
+    border-top: 1px dashed $line-divide;
+  }
+
+  > div.operate {
+    display: flex;
+    justify-content: flex-start;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    > button {
+      margin-right: 15px;
+      padding: 3px 10px;
+      background-color: transparent;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        color: $dominant-hue;
+        border-color: $dominant-hue;
+      }
+    }
+
+    span {
+      color: red;
+      margin-left: 5px;
+    }
+  }
+}

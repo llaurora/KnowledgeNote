@@ -1,0 +1,12 @@
+#indexArea {
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  > #routeContent {
+    height: 100%;
+    flex: 1;
+    overflow-y: auto;
+  }
+}
