@@ -379,7 +379,7 @@ const zoo = Immutable.fromJS({
 
 当比如需要将 zoo.frog 由 🐸 改成 👽 ，发生变动的节点只有上图中绿色的几个，其他的节点直接复用，这样比深拷贝产生的100万个节点效率高了很多。
 
-![trieZooChange](../../../../Desktop/trieZooChange.jpg)
+![trieZooChange](assets/trieZooChange.jpg)
 
 下图中key: **t0143c274**，通过 hash 后得到的值为 621051904（与 md5 不同，比如 hash("a") == 0，hash("c") == 2），转化为二进制后，值是 10010 10000 01001 00000 00000 00000，按照 5bit 切分，寻址路径就如下图所示：
 
@@ -465,7 +465,7 @@ console.log(Immutable.is(obj1,obj3)); //输出的是true(通过比较obj1和obj3
 
 这个特性非常的有趣，这里的lazy指的是什么？很难用语言来描述，我们看一个demo，看完你就明白了
 
-![supportLazyOperation](../../../../Desktop/supportLazyOperation.png)
+![supportLazyOperation](assets/supportLazyOperation.png)
 
  这段代码的意思就是，数组先取奇数，然后再对基数进行平方操作，然后在console.log第2个数，同样的代码，用immutable的seq对象来实现，filter只执行了3次，但原生执行了8次。
    
@@ -655,7 +655,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
 
 为了进一步说明问题，我们再引用一张官网的图来解释，如下图（ SCU表示shouldComponentUpdate，绿色表示返回true(需要更新)，红色表示返回false(不需要更新)；vDOMEq表示虚拟DOM比对，绿色表示一致(不需要更新)，红色表示发生改变(需要更新)）：
 
-![shouldComponentUpdate](../../../../Desktop/shouldComponentUpdate.png)
+![shouldComponentUpdate](assets/shouldComponentUpdate.png)
 
 根据渲染流程，首先会判断shouldComponentUpdate(SCU)是否需要更新。如果需要更新，则调用组件的render生成新的虚拟DOM，然后再与旧的虚拟DOM对比(vDOMEq)，如果对比一致就不更新，如果对比不同，则根据最小粒度改变去更新DOM；如果SCU不需要更新，则直接保持不变，同时其子元素也保持不变。
 
