@@ -9,7 +9,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin'); // 生产打包清空目录下文件
 const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // 包体组成分析
+const eslintFriendlyFormatter = require('eslint-friendly-formatter');
 const webpackCommonConfig = require('./webpack.common.config');
+
+function resolve(dir) {
+  return path.resolve(process.cwd(), dir);
+}
 
 const wepackBuildConfig = {
   output: {
@@ -91,6 +96,30 @@ const wepackBuildConfig = {
         },
       },
     },
+  },
+  module: {
+    rules: [
+      {
+        enforce: 'pre',
+        test: /\.jsx|js$/,
+        include: [resolve('src')], // 限制范围，提高打包速度
+        use: [
+          {
+            loader: 'eslint-loader',
+            options: {
+              /*
+              生产环境fix设置为false，如果为true在生产打包过程中会尽可能修复发现的错误(比如给变量赋值=号后面没与变量值用空格隔开(不符合设置的
+              space-infix-ops规则)会在打包过程中被修复)，但由于已经在控制台报告了错误，会以为还存在不符合eslint规范的代码(虽然尽可能的修复而使其
+              符合eslint规范了，但是也不一定都修复得符合eslint规范了，建议在生产打包之前回顾下代码是否符合eslint规范)
+               */
+              quiet: true, // 设置为true，会忽略eslint检测出来为警告(warn)的，仅仅处理和报告检测出来为错误的(error)
+              fix: true, // 设置为true时，eslint会在源文件中尽可能多的修复发现的错误，不能修复的错误才会被报告出来
+              formatter: eslintFriendlyFormatter, // 指定错误报告的格式规范
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
