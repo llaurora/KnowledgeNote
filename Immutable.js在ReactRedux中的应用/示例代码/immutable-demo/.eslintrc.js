@@ -93,6 +93,7 @@ module.exports = {
     'react/self-closing-comp': 0,
     'react/sort-comp': 0,
     'require-yield': 0,
+    'no-shadow': 0,
   },
   settings: {
     'import/resolver': {

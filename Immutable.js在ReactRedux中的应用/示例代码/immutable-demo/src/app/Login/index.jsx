@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import Immutable from 'immutable';
 import Api from '@api';
 import { fetchRequest } from '@util';
 import imgLoading from '../../asset/images/loading.svg';
@@ -22,9 +23,11 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: '',
-      userPwd: '',
-      loading: false,
+      $state: Immutable.Map({
+        userName: '1',
+        userPwd: '2',
+        loading: false,
+      }),
     };
   }
 
@@ -36,16 +39,25 @@ export default class Login extends Component {
     });
   }
 
+  onChange = (e, fileName) => {
+    const { value } = e.target;
+    this.setState(({ $state }) => ({
+      $state: $state.update(fileName, () => value),
+    }));
+  };
+
   goLogin = () => {
-    const { userName, userPwd } = this.state;
-    if (!userName) {
+    const { $state } = this.state;
+    if (!$state.get('userName')) {
       alert('请输入用户名');
       return;
     }
-    if (!userPwd) {
+    if (!$state.get('userPwd')) {
       alert('请输入密码');
     }
-    this.setState({ loading: true });
+    this.setState(({ $state }) => ({
+      $state: $state.update('loading', () => true),
+    }));
     const loginUrl =
       process.env.NODE_ENV === 'development' &&
       process.env.NODE_STAGE === 'mock'
@@ -56,20 +68,25 @@ export default class Login extends Component {
       method: 'get',
     })
       .then(data => {
+        const immutableData = Immutable.Map(data);
         setTimeout(() => {
-          sessionStorage.setItem('username', data.name);
-          this.setState({ loading: false });
+          sessionStorage.setItem('username', immutableData.get('name'));
+          this.setState(({ $state }) => ({
+            $state: $state.update('loading', () => false),
+          }));
           this.props.history.push('/');
-          this.props.changeLoginState('CANCEL_LOGIN_STATE', data);
+          this.props.changeLoginState('CANCEL_LOGIN_STATE', immutableData);
         }, 1500);
       })
       .catch(() => {
-        this.setState({ loading: false });
+        this.setState(({ $state }) => ({
+          $state: $state.update('loading', () => false),
+        }));
       });
   };
 
   render() {
-    const { userName, userPwd, loading } = this.state;
+    const { $state } = this.state;
     return (
       <div id="loginArea">
         <ul className="loginContent">
@@ -78,17 +95,21 @@ export default class Login extends Component {
             <input
               type="text"
               placeholder="请输入用户名"
-              value={userName}
-              onChange={e => this.setState({ userName: e.target.value })}
+              value={$state.get('userName')}
+              onChange={e => {
+                this.onChange(e, 'userName');
+              }}
             />
             <input
               type="password"
               placeholder="请输入密码"
-              value={userPwd}
-              onChange={e => this.setState({ userPwd: e.target.value })}
+              value={$state.get('userPwd')}
+              onChange={e => {
+                this.onChange(e, 'userPwd');
+              }}
             />
           </li>
-          {loading ? (
+          {$state.get('loading') ? (
             <li className="loading">
               <img src={imgLoading} alt="loading" />
               <span>登录中...</span>

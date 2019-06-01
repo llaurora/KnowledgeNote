@@ -1,4 +1,6 @@
-export function changeLoginState(type, data = {}) {
+import Immutable from 'immutable';
+
+export function changeLoginState(type, data = Immutable.Map({})) {
   return {
     type,
     data,
