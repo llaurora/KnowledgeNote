@@ -1,14 +1,16 @@
-const initialState = { isLogin: false, userInfo: {} };
-export default function loginInfo(state = initialState, action) {
+import Immutable from 'immutable';
+
+const $initialState = Immutable.fromJS({ isLogin: false, userInfo: {} });
+export default function($state = $initialState, action) {
   switch (action.type) {
     case 'CANCEL_LOGIN_STATE':
-      return {
-        ...state,
-        ...{ isLogin: !state.isLogin, userInfo: action.data },
-      };
+      return Immutable.mergeDeep($state, {
+        isLogin: true,
+        userInfo: action.data,
+      });
     case 'CLEAR_LOGIN_STATE':
-      return initialState;
+      return $initialState;
     default:
-      return state;
+      return $state;
   }
 }

@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
-import loginInfo from './Login/loginReducer';
+import { combineReducers } from 'redux-immutable';
+import $loginInfo from './Login/loginReducer';
 
 const rootReducer = combineReducers({
-  loginInfo,
+  $loginInfo,
 });
 
 export default rootReducer;
