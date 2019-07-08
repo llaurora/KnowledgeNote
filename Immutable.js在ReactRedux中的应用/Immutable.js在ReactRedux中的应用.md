@@ -763,7 +763,6 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
   >
   > ![thisBind](assets/thisBind.jpg)
   >
-  > 
 
 
 
@@ -966,8 +965,99 @@ console.log(isEqual,"isEqual")//输出的是false
 
 所以我们知道了:
 * 如何避免React组件的重渲染而造成不必要的浪费关键之处在于控制React生命周期中的shouldComponentUpdate()
-* 然而React官方提供的几种解决方案都只是浅比较(shallowCompare)，当传入props或state不止一层，或者未array和object时，浅比较(shallowCompare)就失效了。
+
+* 然而React官方提供的几种解决方案都只是浅比较(shallowCompare)，当传入props或state不止一层，浅比较(shallowCompare)就失效了。
+
+  > 假设父组件`<Parent />`，子组件`<Child />`
+  >
+  > 子组件使用`shallowCompare`(class类组件的`Purcomponent`，函数式组件的`meomo`)只在下面几种情况下方能起作用：
+  >
+  >  　1、假设`<Child />`有自身的state的状态，那么只有在自身state对象的属性值没有嵌套层，即属性值都为基本数据类型时，方能在setState的时候，避免不必要的的重复渲染；
+  >
+  > ```javascript
+  > function Child() {
+  >   const [number, changeNumber] = React.useState(1000);
+  >   return (
+  >     <div>
+  >       <span>{number}</span>
+  >       <button
+  >         type="button"
+  >         onClick={() => {
+  >           changeNumber(1000);
+  >         }}
+  >       >
+  >         点我
+  >       </button>
+  >     </div>
+  >   );
+  > }
+  > 
+  > export default React.memo(Child);
+  > ```
+  >
+  > 　２、假设`<Child />`没有自身状态(为了排除自身state对象的属性值有嵌套层的情况)，从`<Parent />`传递给`<Child />`的props没有嵌套层，即为基本数据类型时；
+  >
+  > ```javascript
+  > export default function Parent() {
+  >   return <Child number={1000} />;
+  > }
+  > ```
+  >
+  > 　3、假设`<Child />`没有自身状态，从`<Parent />`传递给`<Child />`的props虽然有嵌套层，即引用数据类型，但是直接来源于`<Parent />`的state，没有去”手动加工“
+  >
+  > ```javascript
+  > export default function Parent() {
+  >   const [sendVal, setVal] = React.useState({ number: 1000 });
+  >   return <Child sendProps={sendVal} />;
+  > }
+  > ```
+  >
+  > 除去上面3种情况，`shallowCompare`均会失效；
+  >
+  > ```javascript
+  > // --------------------自身state对象的属性的属性值有引用数据类型-------------------------
+  > export default class Child extends React.PureComponent {
+  >   state = {
+  >     objtype: {
+  >       number: 1000,
+  >     },
+  >   };
+  > 
+  >   changeNumber = () => {
+  >     this.setState({
+  >       objtype: {
+  >         number: 1000,
+  >       },
+  >     });
+  >   };
+  > 
+  >   render() {
+  >     const { objtype } = this.state;
+  >     return (
+  >       <div>
+  >         <span>{objtype.number}</span>
+  >         <button type="button" onClick={this.changeNumber}>
+  >           点我
+  >         </button>
+  >       </div>
+  >     );
+  >   }
+  > }
+  > 
+  > // --------------------传递给<Child />的props-------------------------
+  > export default function Parent() {
+  >   return （
+  >     <Child 
+  >       sendProps={{number: 1000}} 
+  >     />
+  >   ）;
+  > }
+  > ```
+  >
+  > 
+
 * 当然我们也可以在 shouldComponentUpdate() 中使用使用 deepCopy 和 deepCompare 来避免不必要的 re-render()，但 deepCopy（深拷贝） 和 deepCompare（循环层层递归比较） 一般都是非常耗性能的。
+
 * 这个时候我们就需要 Immutable.js，Immutable.js的几大特性解决上面这个React性能问题（Immutable 则提供了简洁高效的判断数据是否变化的方法，只需 === 和 is 比较（比较hashCode）就能知道是否需要执行 render()，而这个操作几乎 0 成本，所以可以极大提高性能），当然还有一点是Immutable.js提供了丰富的Api，终于回到了主线上` Immutable.js在React/Redux中的应用`！！！
 
 
@@ -1191,6 +1281,11 @@ class Person extends React.Component{
 
 #### §<a name="with-redux"> 6.3与Redux搭配使用</a>
 Redux 是目前流行的 Flux 衍生库。它简化了 Flux 中多个 Store 的概念，只有一个 Store，数据操作通过 Reducer 中实现；同时它提供更简洁和清晰的单向数据流（View -> Action -> Middleware -> Reducer），也更易于开发同构应用。目前已经在我们项目中大规模使用。
+
+使用Redux的注意点：
+
+* 避免组件订阅无关的Redux状态，避免不必要的渲染；
+* `React-redux`提供的`connect`方法有一层shallowCompare，如果想让shallowCompare起作用，组件订阅的Redux状态值也同样应该是基本数据类型；
 
 而且 Flux 并没有限定 Store 中数据的类型，使用 Immutable 非常简单。
 
