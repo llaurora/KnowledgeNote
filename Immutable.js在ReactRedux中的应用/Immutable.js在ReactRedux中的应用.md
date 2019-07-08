@@ -1330,6 +1330,7 @@ const store = createStore(rootReducer, initialState);
 >* [如何用React+Redux+ImmutableJS进行SPA开发](http://yunlaiwu.github.io/blog/2016/12/01/react+redux+immutablejs/)
 >* [React 事件绑定 this](https://github.com/nanyang24/blog/issues/75)
 >* [JavaScript 数据类型和数据结构](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Data_structures)
->*  [唠叨一下js对象与哈希表那些事](https://segmentfault.com/a/1190000007692754)
+>* [唠叨一下js对象与哈希表那些事](https://segmentfault.com/a/1190000007692754)
 >* [JavaScript 对象与 Hash 表](https://lz5z.com/JavaScript-Object-Hash/)
+>* [关于react, redux, react-redux和reselect的一些思考](https://zhuanlan.zhihu.com/p/33985606)
 
