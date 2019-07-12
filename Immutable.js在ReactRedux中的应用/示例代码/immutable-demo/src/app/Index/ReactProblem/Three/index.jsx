@@ -27,7 +27,7 @@ export default class Three extends React.Component {
 
   render() {
     const { count, name, age, pers } = this.state;
-    const person = { name, age };
+    const person = { name, age }; // eslint-disable-line
     return (
       <div className="card">
         <h3>3、使用PureComponent问题</h3>

@@ -32,7 +32,7 @@ export default class Six extends React.Component {
     });
     return (
       <div className="card">
-        <h3>5、使用Immutable控制SCU</h3>
+        <h3>6、使用Immutable控制SCU</h3>
         <p className="discribe">
           1、借助第三方库react-immutable-render-mixin控制SCU；
           <br />
