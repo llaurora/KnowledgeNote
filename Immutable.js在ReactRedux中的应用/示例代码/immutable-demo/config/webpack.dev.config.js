@@ -64,6 +64,7 @@ const wepackDevConfig = {
     },
     compress: true, // 启用gzip压缩
     inline: true, // 设置为true，当源文件改变时会自动刷新页面
+    open: true, // 告诉dev-server在服务器启动后打开浏览器
     hot: true, // 模块热更新，取决于HotModuleReplacementPlugin
     host: devServerHost, // 设置默认监听域名，如果省略，默认为“localhost”
     port: devServerPort, // 设置默认监听端口，如果省略，默认为“8080”

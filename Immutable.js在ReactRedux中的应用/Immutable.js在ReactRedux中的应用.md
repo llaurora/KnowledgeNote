@@ -1285,7 +1285,7 @@ Redux 是目前流行的 Flux 衍生库。它简化了 Flux 中多个 Store 的�
 使用Redux的注意点：
 
 * 避免组件订阅无关的Redux状态，避免不必要的渲染；
-* `React-redux`提供的`connect`方法有一层shallowCompare，如果想让shallowCompare起作用，组件订阅的Redux状态值也同样应该是基本数据类型；
+* `React-redux`提供的`connect`方法有一层shallowCompare，如果想让shallowCompare起作用，组件订阅的Redux状态值也同样应该是基本数据类型，不要在mapStateToProps构建新的对象；
 
 而且 Flux 并没有限定 Store 中数据的类型，使用 Immutable 非常简单。
 

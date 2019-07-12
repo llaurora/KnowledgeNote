@@ -1,7 +1,12 @@
 import React from 'react';
 import Immutable from 'immutable';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 export default class Child extends React.Component {
+  static propTypes = {
+    $person: ImmutablePropTypes.map,
+  };
+
   constructor(props) {
     super(props);
     this.state = {

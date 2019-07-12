@@ -1,24 +1,23 @@
 import React from 'react';
-import _ from 'lodash';
+import Immutable from 'immutable';
 import { formatData } from '@util';
 
-const prodData1 = formatData();
-const prodData2 = _.cloneDeep(prodData1);
-// const prodData2 = formatData();
+const prodData1 = Immutable.fromJS(formatData());
+const prodData2 = Immutable.merge(prodData1);
+// const prodData2 = Immutable.fromJS(formatData());
 
-export default class Two extends React.Component {
+export default class Three extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       takeUpTime: 0,
-      equalSign: 0,
+      equalSign: true,
     };
   }
 
   clickMe = () => {
     const start = new Date().getTime();
-    const compareResult =
-      JSON.stringify(prodData1) === JSON.stringify(prodData2);
+    const compareResult = Immutable.is(prodData1, prodData2);
     const end = new Date().getTime();
     this.setState({
       takeUpTime: end - start,
@@ -44,12 +43,7 @@ export default class Two extends React.Component {
     }
     return (
       <div className="card">
-        <h2>2、使用JSON.stringify</h2>
-        <p className="discribe">
-          使用JSON.stringify，非数组对象的属性不能保证以特定的顺序出现在序列化后的字符串中，
-          并且undefined、任意的函数以及symbol值，在序列化过程中会被忽略（出现在非数组对象的
-          属性值中时）或者被转换成null（出现在数组中时）以及其他问题，使用此方法比较存在一定风险；
-        </p>
+        <h2>3、使用Immutable</h2>
         <hr />
         <div className="operate">
           <button type="button" onClick={this.clickMe}>
@@ -60,6 +54,8 @@ export default class Two extends React.Component {
           </p>
         </div>
         <p>是否相等：{showIsEqual}</p>
+        <p>prodData1的hasCode值：{Immutable.hash(prodData1)}</p>
+        <p>prodData2的hasCode值：{Immutable.hash(prodData2)}</p>
       </div>
     );
   }

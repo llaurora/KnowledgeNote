@@ -56,7 +56,9 @@ const webpackCommonConfig = {
             options: {
               sourceMap: true,
               plugins() {
-                return [autoprefixer({ browsers: ['last 40 versions'] })];
+                return [
+                  autoprefixer({ overrideBrowserslist: ['last 40 versions'] }),
+                ];
               },
             },
           },

@@ -8,6 +8,13 @@
   align-items: flex-start;
   flex: 1;
 
+  > p.discribe {
+    font-size: 14px;
+    text-indent: 26px;
+    color: red;
+    margin-right: 10px;
+  }
+
   > hr {
     width: 90%;
     height: 0;

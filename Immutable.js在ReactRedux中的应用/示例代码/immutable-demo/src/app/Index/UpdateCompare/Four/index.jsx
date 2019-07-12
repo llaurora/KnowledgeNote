@@ -1,10 +1,10 @@
 import React from 'react';
-import produce from 'immer';
+import Immutable from 'immutable';
 import { formatData } from '@util';
 
-const prodData = formatData();
+const prodData = Immutable.fromJS(formatData());
 
-export default class Three extends React.Component {
+export default class Four extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,9 +14,7 @@ export default class Three extends React.Component {
 
   clickMe = (data, key) => {
     const start = new Date().getTime();
-    const newData = produce(data, draft => { // eslint-disable-line
-      draft[key].isShow = !draft[key].isShow; // eslint-disable-line
-    });
+    const newData = data.update(key, item => item.update('isShow', ishow => !ishow)); // eslint-disable-line
     const end = new Date().getTime();
     this.setState({ takeUpTime: end - start });
   };
@@ -25,7 +23,10 @@ export default class Three extends React.Component {
     const { takeUpTime } = this.state;
     return (
       <div className="card">
-        <h2>3、使用Immer</h2>
+        <h2>4、使用Immutable</h2>
+        <p className="discribe">
+          这儿忽略了构造Immutable对象的消耗，其实构造Immutable对象效率是超不过Js原生对象的构造的
+        </p>
         <hr />
         <div className="operate">
           <button type="button" onClick={() => this.clickMe(prodData, 'key9')}>
