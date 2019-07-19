@@ -1,6 +1,6 @@
 
 
-## Js作用域及闭包
+## Js 作用域及闭包
 
 #### &sect; [执行环境及作用域](#js-scope)
 * [为什么需要块级作用域？](#why-blockScope)
@@ -445,4 +445,5 @@ const funC = funA();
 >* [阮一峰《ECMAScript入门》](http://es6.ruanyifeng.com/#docs/let)
 >* [近一万字的ES6语法知识点补充](https://mp.weixin.qq.com/s/WxZYN9W-cSG2sd0wo-rAPw)
 >* [我用了两个月的时间才理解 let](https://zhuanlan.zhihu.com/p/28140450)
+>* [我理解的 let 变量定义与 for 循环](https://juejin.im/post/5d304018f265da1b855c8eb0)
 
