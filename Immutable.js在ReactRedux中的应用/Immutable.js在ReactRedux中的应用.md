@@ -758,7 +758,7 @@ React的重复渲染优化的核心其实就是在shouldComponentUpdate里面做
   > 
   > const a =new A();
   > 
-  > console.log(A,a.hasOwnProperty("fn"));
+  > console.log(a, a.hasOwnProperty("fn"));
   > ```
   >
   > ![thisBind](assets/thisBind.jpg)
