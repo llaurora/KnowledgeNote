@@ -970,20 +970,115 @@ console.log(isEqual,"isEqual")//输出的是false
 
   > 假设父组件`<Parent />`，子组件`<Child />`
   >
-  > 子组件使用`shallowCompare`(class类组件的`Purcomponent`，函数式组件的`meomo`)只在下面几种情况下方能起作用：
+  > 子组件使用`shallowCompare`(class类组件的`Purcomponent`，函数式组件的`meomo`)只在下面几种情况下方能起作用(避免不必要的重复渲染)：
   >
-  >  　1、假设`<Child />`有自身的state的状态，那么只有在自身state对象的属性值没有嵌套层，即属性值都为基本数据类型时，方能在setState的时候，避免不必要的的重复渲染；
+  > > 注：memo不控制函数式组件内部状态的SCU，其比较的仅仅是传递到该组件的props。可以简单的理解为`Purcomponent`=`memo`+`shouldComponentUpdate的自身state比较`
+  >
+  > * 忽略父组件传过来的props，考虑组件自身state;
+  >
+  >   > 这种情况在实际生产中很少存在，毕竟你去setState，是当有变化的时候，是想re-render才去setState的，自然该重新渲染，而不是明知道没有发生变化还去re-redner，在这儿仅列举下
+  >
+  >   1、子组件自身state对象的属性值没有嵌套层，即属性值都为基本数据类型；
+  >
+  >   ```javascript
+  >   // --------------------------Hooks组件-----------------------------
+  >   function Child() {
+  >     const [counter, setCounter] = useState(100);
+  >     console.log('re-render');
+  >     return (
+  >       <div>
+  >         <span>{counter}</span>
+  >         <button
+  >           type="button"
+  >           onClick={() => {
+  >             setCounter(100);
+  >           }}
+  >         >
+  >           点我
+  >         </button>
+  >       </div>
+  >     );
+  >   }
+  >   
+  >   export default Child;
+  >   
+  >   // --------------------------Class类组件-----------------------------
+  >   class Child extends React.PureComponent {
+  >     constructor(props) {
+  >       super(props);
+  >       this.state = {
+  >         counter: 100,
+  >       };
+  >     }
+  >   
+  >     render() {
+  >       console.log('re-render');
+  >       const { counter } = this.state;
+  >       return (
+  >         <div>
+  >           <span>{counter}</span>
+  >           <button
+  >             type="button"
+  >             onClick={() => {
+  >               this.setState({
+  >                 counter: 100,
+  >               });
+  >             }}
+  >           >
+  >             点我
+  >           </button>
+  >         </div>
+  >       );
+  >     }
+  >   }
+  >   
+  >   export default Child;
+  >   ```
+  >
+  >   
+  >
+  > * 忽略组件自身state，考虑父组件传过来的props;
+  >
+  >   1、传递到该子组件的props为基本数据类型；
+  >
+  >   ```javascript
+  >   function Parent() { // Class类组件同样
+  >   	return <Child counter={100} />;
+  >   }
+  >   
+  >   export default Parent;
+  >   ```
+  >
+  >   2、传递到该子组件的props为引用数据类型，但直接来源于父组件的state，且没有更改这个引用数据类型在堆里的地址(redux树上的state同样)；
+  >
+  >   ```javascript
+  >   function Parent() { // Class类组件同样
+  >     const [obj, setObj] = useState({ counter: 100 });
+  >     return <Child sendProps={obj} />;
+  >   }
+  >   
+  >   export default Parent;
+  >   ```
+  >
+  > 除去上面几种情况且排出有效的setState，`shallowCompare`均会失效；
   >
   > ```javascript
+  > // --------------------自身state对象的属性的属性值有引用数据类型-------------------------
+  > // 1.Hooks组件
   > function Child() {
-  >   const [number, changeNumber] = React.useState(1000);
+  >   const [obj, setObj] = useState({
+  >     counter: 100,
+  >   });
+  >   console.log('re-render');
   >   return (
   >     <div>
-  >       <span>{number}</span>
+  >       <span>{obj.counter}</span>
   >       <button
   >         type="button"
   >         onClick={() => {
-  >           changeNumber(1000);
+  >           setObj({
+  >             counter: 100,
+  >           });
   >         }}
   >       >
   >         点我
@@ -992,51 +1087,37 @@ console.log(isEqual,"isEqual")//输出的是false
   >   );
   > }
   > 
-  > export default React.memo(Child);
-  > ```
-  >
-  > 　２、假设`<Child />`没有自身状态(为了排除自身state对象的属性值有嵌套层的情况)，从`<Parent />`传递给`<Child />`的props没有嵌套层，即为基本数据类型时；
-  >
-  > ```javascript
-  > export default function Parent() {
-  >   return <Child number={1000} />;
-  > }
-  > ```
-  >
-  > 　3、假设`<Child />`没有自身状态，从`<Parent />`传递给`<Child />`的props虽然有嵌套层，即引用数据类型，但是直接来源于`<Parent />`的state，没有去”手动加工“
-  >
-  > ```javascript
-  > export default function Parent() {
-  >   const [sendVal, setVal] = React.useState({ number: 1000 });
-  >   return <Child sendProps={sendVal} />;
-  > }
-  > ```
-  >
-  > 除去上面3种情况，`shallowCompare`均会失效；
-  >
-  > ```javascript
-  > // --------------------自身state对象的属性的属性值有引用数据类型-------------------------
-  > export default class Child extends React.PureComponent {
-  >   state = {
-  >     objtype: {
-  >       number: 1000,
-  >     },
-  >   };
+  > export default Child;
   > 
-  >   changeNumber = () => {
-  >     this.setState({
-  >       objtype: {
-  >         number: 1000,
+  > // 2.Class类组件
+  > class Child extends React.PureComponent {
+  >   constructor(props) {
+  >     super(props);
+  >     this.state = {
+  >       obj: {
+  >         counter: 100,
   >       },
-  >     });
-  >   };
+  >     };
+  >   }
   > 
   >   render() {
-  >     const { objtype } = this.state;
+  >     console.log('re-render');
+  >     const {
+  >       obj: { counter },
+  >     } = this.state;
   >     return (
   >       <div>
-  >         <span>{objtype.number}</span>
-  >         <button type="button" onClick={this.changeNumber}>
+  >         <span>{counter}</span>
+  >         <button
+  >           type="button"
+  >           onClick={() => {
+  >             this.setState({
+  >               obj: {
+  >                 counter: 100,
+  >               },
+  >             });
+  >           }}
+  >         >
   >           点我
   >         </button>
   >       </div>
@@ -1044,19 +1125,48 @@ console.log(isEqual,"isEqual")//输出的是false
   >   }
   > }
   > 
+  > export default Child;
+  > 
   > // --------------------传递给<Child />的props-------------------------
-  > export default function Parent() {
+  > // 传递到子组件的props为引用数据类型且不直接来源于父组件的state
+  > function Parent() {
   >   return （
-  >     <Child 
-  >       sendProps={{number: 1000}} 
-  >     />
+  >    <Child 
+  >      sendProps={{counter: 100}} 
+  >    />
   >   ）;
   > }
+  > 
+  > export default Parent；
+  > 
+  > // 传递到子组件的props为引用数据类型且直接来源于父组件的state，但更改了其引用地址
+  > // 下面代码第一次正常渲染，其实第2次的时候，就不应该重新渲染了，传过去的props的'值是相等的'
+  > function Parent() {
+  >   const [obj, setObj] = useState({
+  >     num: 200,
+  >     counter: 100,
+  >   })
+  >   return （
+  >   	<div>
+  >      <span onClick = {
+  >        setObj({
+  >          counter: 200,
+  >          ...obj
+  >        })
+  >      }>点我</span>
+  >      <Child
+  >        sendProps={obj} 
+  >      />
+  >     </div>
+  >   ）;
+  > }
+  > 
+  > export default Parent；
   > ```
   >
   > 
 
-* 当然我们也可以在 shouldComponentUpdate() 中使用使用 deepCopy 和 deepCompare 来避免不必要的 re-render()，但 deepCopy（深拷贝） 和 deepCompare（循环层层递归比较） 一般都是非常耗性能的。
+* 当然我们也可以在 shouldComponentUpdate() 中使用使用 deepCopy 和 deepCompare 来避免不必要的 re-render()，但 deepCopy（深拷贝） 和 deepCompare（循环层层递归比较） 一般都是非常耗性能的，或者把传到子组件的props的都放在父组件的state上。
 
 * 这个时候我们就需要 Immutable.js，Immutable.js的几大特性解决上面这个React性能问题（Immutable 则提供了简洁高效的判断数据是否变化的方法，只需 === 和 is 比较（比较hashCode）就能知道是否需要执行 render()，而这个操作几乎 0 成本，所以可以极大提高性能），当然还有一点是Immutable.js提供了丰富的Api，终于回到了主线上` Immutable.js在React/Redux中的应用`！！！
 
