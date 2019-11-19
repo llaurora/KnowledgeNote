@@ -2,7 +2,12 @@
 
 ## webpack 初识
 
-### webpack 究竟是什么？
+1. [webpack 是什么](#what-webpack)
+2. [搭建 webpack 环境](#webpack-environment)
+3. [使用 webpack 配置文件](#use-config)
+4. [浅析 webpack 打包输出内容](#build-content)
+
+###  <a name="what-webpack">webpack 是什么</a>
 
 原始的网页开发：
 
@@ -208,7 +213,7 @@ import Content from './content.js';
 
 可以将 import 后面的 `Header`或者`Content`视为一个个`模块，`当然除了这种`ES6 模块引入方法`还有诸如`Common JS`、`CMD`及`AMD`等模块引入规范。webpack 打包的模块也不仅限于`JS 文件`了，比如`Css 文件`、`jpg 等图片文件`等等都可以用 webpack 进行打包。
 
-### 搭建 webpack 环境
+### <a name="webpack-environment">搭建 webpack 环境</a>
 
 webpack 是基于 `Node.js`开发的模块打包工具，自然得先安装`Node.js`，这儿推荐用 [nvm 安装]([https://github.com/DlLucky/Note/tree/master/Node%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85](https://github.com/DlLucky/Note/tree/master/Node版本管理工具安装))。
 
@@ -249,7 +254,7 @@ webpack 是基于 `Node.js`开发的模块打包工具，自然得先安装`Node
      // 或者 ./node_modules/.bin/webpack -v
      ```
 
-### 使用webpack 配置文件
+### <a name="use-config">使用 webpack 配置文件</a>
 
 前面的例子，虽然没有看到 webpack 的配置文件，但用`npx webpack index.js`照样能打包？其实是运行`npx webpack`的时候，webpack 会去找默认的配置文件 `webpack.config.js` ，其默认配置文件默认是打包的 `src` 下面的 `index.js` 到 `dist`目录下，但前面的例子`index.js`并没有在 `src`下，如果在在`src`下，直接运行`npx webpack`或者`./node_modules/.bin/webpack`便可用 webpack 的默认配置文件进行打包。
 
@@ -311,7 +316,7 @@ module.exports = {
 
 运行`npm run build`构建的时候，其实就是运行的`package.json`里面`scripts`下面的`build`命令，从而运行webpack，而在 scripts下面能直接运行 webpack，是因为模块局部安装的时候会在`node_modules/.bin`目录下创建一个软链接
 
-### 浅析webpack打包输出内容
+### <a name="build-content">浅析 webpack 打包输出内容</a>
 
 对上面例子，运行`npm run build`进行打包，其输出信息如下图
 

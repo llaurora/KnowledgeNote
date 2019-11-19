@@ -2,9 +2,12 @@
 # Immutable.js在React/Redux中的应用
 
 ### 目录
+
 ##### &sect; [1.几个场景](#some-scence)
 ##### &sect; [2.什么是 Immutable Data](#what-ImmutableData)
+
 ##### &sect; [3.Immutable.js介绍](#Immutable-introduce)
+
 * [3.1Immutable.js 主要的三大特性](#main-feature)
 * [3.2Immutable.js 优点](#main-advantage)
 * [3.3Immutable.js 缺点](#main-disadvantage)
@@ -24,6 +27,7 @@
 * [6.3与Redux搭配使用](#with-redux)
 
 ## § <a name="some-scence">1.几个场景</a>
+
 #### ⊙ 场景一：关于数据不可变
 ##### 例1：
 ```javascript
