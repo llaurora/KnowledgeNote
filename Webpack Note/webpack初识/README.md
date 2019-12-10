@@ -2,7 +2,7 @@
 
 ## webpack 初识
 
-1. [webpack 是什么](#what-webpack)
+1. [webpack 是什](#what-webpack)
 2. [搭建 webpack 环境](#webpack-environment)
 3. [使用 webpack 配置文件](#use-config)
 4. [浅析 webpack 打包输出内容](#build-content)
@@ -334,7 +334,7 @@ module.exports = {
 
 `Chunks`：打包输出的文件对应的 id，在这儿即`bundle.js`对应的 id 是 0；
 
-`Chunk Names`：打包输出的文件对应的名称，子这让即`bundle.js`对应的名称是`main`；
+`Chunk Names`：打包输出的文件对应的名称，在这儿即`bundle.js`对应的名称是`main`；
 
 > 这儿的`main`，其实来自于 webpack 配置文件中的 entry
 >
