@@ -1817,14 +1817,79 @@ npm install --save-dev @babel/plugin-transform-runtime
          }
        });
      }
+   
+   ```
+
+   再上面基础上再将`@babel/preset-env`的 `modules`设置为 "false"，重新编译，结果如下，是不是有小小的惊喜，至于为什么，前面有提过
+
+   ```javascript
+   import "core-js/modules/es.array.flat";
+   import "core-js/modules/es.array.unscopables.flat";
+   import "core-js/modules/es.object.to-string";
+   import "core-js/modules/es.promise";
+   import "core-js/modules/esnext.global-this";
+   import "regenerator-runtime/runtime";
+   import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+   import _createClass from "@babel/runtime/helpers/createClass";
+   
+   // 新的 JavaScript 语法
+   var Point =
+   /*#__PURE__*/
+   function () {
+     function Point(x, y) {
+       _classCallCheck(this, Point);
+   
+       this.x = x;
+       this.y = y;
+     }
+   
+     _createClass(Point, [{
+       key: "getX",
+       value: function getX() {
+         return this.x;
+       }
+     }]);
+   
+     return Point;
+   }();
+   
+   // 新的内置全局对象
+   Promise.resolve(32).then(function (x) {
+     return console.log(x);
+   });
+   
+   // 实例上的新的方法
+   [1, [2, 3], [4, [5]]].flat(2);
+   
+   // proposal 阶段的内置对象
+   globalThis.test = {
+     a: 100
+   };
+   
+   function func() {
+     function inner() {
+       return regeneratorRuntime.async(function inner$(_context) {
+         while (1) {
+           switch (_context.prev = _context.next) {
+             case 0:
+               _context.next = 2;
+               return regeneratorRuntime.awrap('Hi');
+   
+             case 2:
+             case "end":
+               return _context.stop();
+           }
+         }
+       });
+     }
    }
    ```
 
-
+   
 
 ## 小小总结
 
-如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋，而且 `@babel/plugin-transform-runtime` 在启用 polyfill 处理时处理不了 proposal 的 API，只能选择用`@babel/plugin-transform-runtime` 去处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧
+如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋，而且 `@babel/plugin-transform-runtime` 在启用 polyfill 处理时处理不了 proposal 的 API，只能选择用`@babel/plugin-transform-runtime` 去处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，还有一点是建议是将`@babel/preset-env`的 `modules`设置为 "false"
 
 ```javascript
 module.exports = {
@@ -1833,6 +1898,7 @@ module.exports = {
             "@babel/preset-env",
             {
                 useBuiltIns : "usage",
+                modules: false,
                 corejs: {version: 3, proposals: true},
             }
         ]
