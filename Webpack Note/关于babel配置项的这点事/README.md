@@ -2042,7 +2042,7 @@ import "core-js/modules/web.dom-collections.for-each";
 ## 参考链接
 
 * [babel 官网](https://babeljs.io/)
-* [流云诸葛 babel 系列]([http://blog.liuyunzhuge.com/2019/08/23/babel%E8%AF%A6%E8%A7%A3%EF%BC%88%E4%B8%80%EF%BC%89/](http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/))
+* [流云诸葛 babel 系列](http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/)
 * [不容错过的 Babel 7 知识汇总](https://mp.weixin.qq.com/s/xTfjMG2graIrfGGqhue_Jg)
 * [Babel 插件有啥用](https://zhuanlan.zhihu.com/p/61780633)
 * [babel 7 最佳实践](https://github.com/SunshowerC/blog/issues/5)
