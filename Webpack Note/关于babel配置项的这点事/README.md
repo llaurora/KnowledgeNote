@@ -1758,8 +1758,6 @@ npm install --save-dev @babel/plugin-transform-runtime
    + export const obj = {...{a: 100, b: 200}};
    ```
    
-   
-   
    ```javascript
    module.exports = {
        presets: [
@@ -1849,9 +1847,9 @@ npm install --save-dev @babel/plugin-transform-runtime
        value: function getX() {
       return this.x;
        }
-  }]);
+     }]);
      return Point;
-   }();
+    }();
    
    // 新的内置全局对象
    Promise.resolve(32).then(function (x) {
@@ -1890,6 +1888,7 @@ npm install --save-dev @babel/plugin-transform-runtime
    });
    
    exports.obj = obj;
+   
    ```
    
    可以看到虽然对 "_classCallCheck"等 helper 函数做了提取操作，但是 "_objectSpread" 还是存在于代码里面
@@ -1912,7 +1911,7 @@ npm install --save-dev @babel/plugin-transform-runtime
    import "core-js/modules/es.object.to-string";
    import "core-js/modules/es.promise";
    import "core-js/modules/esnext.global-this";
-import "core-js/modules/web.dom-collections.for-each";
+   import "core-js/modules/web.dom-collections.for-each";
    import _defineProperty from "@babel/runtime/helpers/defineProperty";
    import "regenerator-runtime/runtime";
    import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
@@ -1982,11 +1981,19 @@ import "core-js/modules/web.dom-collections.for-each";
    
    
 
-## 小小总结
+## 小总结
 
 如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋。但两者都建议将`@babel/preset-env`的 `modules`设置为 "false"。
 
 1. 如果是开发一个独立的工具库，不需要考虑目标运行环境（忽略 `browserslist`的配置），又想避免全局变量污染（不确定它将会被其它人用到什么运行环境里面），那建议关闭`@babel/preset-env` 启用 polyfill，使用`@babel/plugin-transform-runtime` 的 polyfill 功能
+
+   ```shell
+   npm install --save @babel/core
+   npm install --save @babel/preset-env
+   npm install --save @babel/runtime-corejs3
+   
+   npm install --save-dev @babel/plugin-transform-runtime
+   ```
 
    ```javascript
    module.exports = {
@@ -2011,6 +2018,17 @@ import "core-js/modules/web.dom-collections.for-each";
    ```
 
 2. 如果是在项目中使用，需要考虑目标运行环境，只能选择用`@babel/plugin-transform-runtime` 去尽可能的处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，尽管避免不了全局变量污染，或者以后版本升级后会有变化？
+
+   ```shell
+   npm install --save @babel/core
+   npm install --save @babel/preset-env
+   npm install --save core-js
+   npm install --save @babel/runtime
+   
+   npm install --save-dev @babel/plugin-transform-runtime
+   ```
+
+   
 
    ```javascript
    module.exports = {
