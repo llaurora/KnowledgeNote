@@ -19,7 +19,7 @@
 
 看看 [babel 官网](https://babeljs.io/docs/en/)，看看这些这位 [流云诸葛](http://blog.liuyunzhuge.com/) 老铁写的 [babel 系列]([http://blog.liuyunzhuge.com/2019/08/23/babel%E8%AF%A6%E8%A7%A3%EF%BC%88%E4%B8%80%EF%BC%89/](http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/))，应该是能解惑的！
 
-以下所写内容仅为了记录梳理、实践如何去选择 babel 的配置方式、怎么去写 babel 的配置文件 。
+以下所写内容仅为了记录梳理、实践如何去选择 babel 的配置方式、怎么去写 babel 的配置文件 （总结在文章末尾）。
 
 
 
@@ -405,7 +405,7 @@ const func = () => {};
     "@babel/plugin-syntax-top-level-await": "^7.7.4",
     "@babel/plugin-transform-arrow-functions": "^7.7.4",
     "@babel/plugin-transform-async-to-generator": "^7.7.4",
-  	...
+  	 ...
     "@babel/plugin-transform-unicode-regex": "^7.7.4",
     "@babel/types": "^7.7.4",
     "browserslist": "^4.6.0",
@@ -1007,7 +1007,7 @@ module.exports = {
    
    // 新的内置全局对象
    Promise.resolve(32).then(function (x) {
-  return console.log(x);
+    return console.log(x);
    });
 
    // 实例上的新的方法
@@ -1048,7 +1048,7 @@ module.exports = {
    var Point =
 /*#__PURE__*/
    function () {
-  function Point(x, y) {
+    function Point(x, y) {
        _classCallCheck(this, Point);
    
        this.x = x;
@@ -1309,7 +1309,7 @@ globalThis.test = {
 1. babel 在使用 比如 `@babel/preset-env` 进行转码过程中，会加入很多 babel 自己的 helper 函数（比如 ”_classCallCheck“），这些 helper 函数，在每个文件里可能都会重复存在；
 2. 开发者在代码中如果使用了新的 ES API，比如 `Promise`、`generator` 全局对象、`Object.assign`、`[].flat`等，往往需要通过 `core-js` 和 `regenerator-runtime` 给全局环境注入 polyfill（比如 `require("core-js/modules/es.promise");`）。 这种做法，在应用型的开发中，是非常标准的做法。 但是如果在开发一个独立的工具库项目，不确定它将会被其它人用到什么运行环境里面，那么这种扩展全局环境的 polyfill 就不是一个很好的方式；
 
-而这正是需要 `babel的runtime` 的原因，其包含两部分。其中一个部分就是 [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)，是一个可以重复使用 `Babel` 注入的帮助程序，以节省转码后文件大小的插件，它是一个开发环境的依赖（安装到 “devDependencies“）。而且可以帮助项目创建一个沙盒环境，即使在代码里用到了新的 ES API 而需要进行 polyfill，它能将其对应的全局变量，转换为对 `core-js` 和 `regenerator-runtime` 非全局变量版本的引用。这其实也应该看作是一种给代码提供 polyfill 的方式。而且`@babel/plugin-transform-runtime`还得搭配`babel`的一个内部库：[@babel/runtime 使用，它是这是一个生产环境的依赖（安装 ”dependencies“），在 `@babel/plugin-transform-runtime` 作用的过程中，会使用`@babel/runtime`内部的模块，来代替前面看到的重复的 helper 函数、对全局变量有污染的`core-js`和`regenerator-runtime`相关变量。
+而这正是需要 `babel的runtime` 的原因，其包含两部分。其中一个部分就是 [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)，是一个可以重复使用 `Babel` 注入的帮助程序，以节省转码后文件大小的插件，它是一个开发环境的依赖（安装到 “devDependencies“）。而且可以帮助项目创建一个沙盒环境，即使在代码里用到了新的 ES API 而需要进行 polyfill，它能将其对应的全局变量，转换为对 `core-js` 和 `regenerator-runtime` 非全局变量版本的引用。这其实也应该看作是一种给代码提供 polyfill 的方式。而且`@babel/plugin-transform-runtime`还得搭配`babel`的一个内部库：[`@babel/runtime`](https://babeljs.io/docs/en/babel-runtime) 使用，它是一个生产环境的依赖（安装到 ”dependencies“），在 `@babel/plugin-transform-runtime` 作用的过程中，会使用`@babel/runtime`内部的模块，来代替前面看到的重复的 helper 函数、对全局变量有污染的`core-js`和`regenerator-runtime`相关变量。
 
 ```she
 npm install --save-dev @babel/plugin-transform-runtime
@@ -1355,6 +1355,34 @@ npm install --save @babel/runtime-corejs3
   `boolean`, defaults to `true`.
 
   是否对`regenerator-runtime`进行 polyfill， 默认为 "true"
+  
+* `useESModules`
+
+  `boolean`, defaults to `false`.
+
+  使用 ES modules helpers, 减少 commonJS 语法代码
+
+  设置为 "false"的时候
+
+  ```javascript
+  exports.__esModule = true;
+  
+  exports.default = function(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+  ```
+
+  设置为 "true"的时候
+
+  ```javascript
+  export default function(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+  ```
 
 更多 options 配置详情查看 [@babel/plugin-transform-runtime 之 options](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
 
@@ -1436,7 +1464,7 @@ npm install --save-dev @babel/plugin-transform-runtime
 
    其实从编译结果可以看出以下几点：
 
-   * `babel的runtime ` 把 helper 函数（如在没使用 `babel的runtime` 时，编译后代码里的 “_classCallCheck” ），都转换成了对 `@babel/runtime` 内 modules 的引用；
+   * `babel的runtime ` 把 helper 函数（比如在没使用 `babel的runtime` 时，编译后代码里的 “_classCallCheck” ），都转换成了对 `@babel/runtime` 内 modules 的引用；
    * 并没有对新的 ES API 进行 polyfill ，如上面的 `Promise`、`[].flat`以及 proposal 状态的 globalThis；
 
 2. 也正如前面所提到的，`@babel/plugin-transform-runtime` 是不启用对`core-js`的 polyfill 处理的，要想启用的话得使用 `@babel/runtime` 的另外的两个版本，这儿直接选择 `core-js@3`对应的 `@babel/runtime`版本是 [@babel/runtime-corejs3](https://www.npmjs.com/package/@babel/runtime-corejs3) ，为什么不用`core-js@2` 以及 `proposals` 为什么设为 "true" ？前面已提过，这儿不再赘述
@@ -1616,7 +1644,7 @@ npm install --save-dev @babel/plugin-transform-runtime
    }
    ```
 
-   尴尬不尴尬？
+   惊不惊喜，意不意外？
 
 4. 那同时启用 `@babel/preset-env` 和 `@babel/plugin-transform-runtime` 的 polyfill 处理，还原 `.browserslistrc`为不那么新的配置，在`src`目录下`index.js`添加 generator 函数 
 
@@ -1720,10 +1748,18 @@ npm install --save-dev @babel/plugin-transform-runtime
    }
    ```
 
-   可以看到对 `Promise` 、`flat` 、`generator`的处理，重复了有没有，是不是尴尬？
+   可以看到有对 `Promise` 、`flat` 、`generator`的处理，重复了有没有，惊不惊喜？
 
-5. 讲真，目前的实践看来，只能使用 `@babel/plugin-transform-runtime` 对 helper 函数的处理，至于对新 ES API 的 polyfill 处理还是交给 `@babel/preset-env` 来处理，尽管这样的难免会污染全局变量，而且`@babel/preset-env`  并没有 "regenerator" 选项，为避免重复处理，`@babel/plugin-transform-runtime`选项里将 "regenerator" 设置为 ”false“
+5. 讲真，目前的实践看来，只能使用 `@babel/plugin-transform-runtime` 尽可能的对 helper 函数的处理（有些 helper 函数还是处理不到会被添加到文件中），至于对新 ES API 的 polyfill 处理还是交给 `@babel/preset-env` 来处理，尽管这样的难免会污染全局变量，而且`@babel/preset-env`  并没有 "regenerator" 选项，为避免重复处理，`@babel/plugin-transform-runtime`选项里将 "regenerator" 设置为 ”false“
 
+   并且为了验证 `@babel/plugin-transform-runtime` 是尽可能的对 helper 函数的处理，在`src`目录下`index.js`增加以下内容
+   
+   ```diff
+   + export const obj = {...{a: 100, b: 200}};
+   ```
+   
+   
+   
    ```javascript
    module.exports = {
        presets: [
@@ -1737,25 +1773,41 @@ npm install --save-dev @babel/plugin-transform-runtime
        ],
        plugins: [
            [
-               "@babel/plugin-transform-runtime",
+            "@babel/plugin-transform-runtime",
                {
-                   regenerator: false
+                regenerator: false
                }
            ]
        ]
    };
    ```
-
+   
    运行 `npm run compiler`，编译结果如下
-
+   
    ```javascript
    "use strict";
    
    var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
    
+   require("core-js/modules/es.symbol");
+   
+   require("core-js/modules/es.array.filter");
+   
    require("core-js/modules/es.array.flat");
    
+   require("core-js/modules/es.array.for-each");
+   
    require("core-js/modules/es.array.unscopables.flat");
+   
+   require("core-js/modules/es.object.define-properties");
+   
+   require("core-js/modules/es.object.define-property");
+   
+   require("core-js/modules/es.object.get-own-property-descriptor");
+   
+   require("core-js/modules/es.object.get-own-property-descriptors");
+   
+   require("core-js/modules/es.object.keys");
    
    require("core-js/modules/es.object.to-string");
    
@@ -1763,11 +1815,24 @@ npm install --save-dev @babel/plugin-transform-runtime
    
    require("core-js/modules/esnext.global-this");
    
+   require("core-js/modules/web.dom-collections.for-each");
+   
+   Object.defineProperty(exports, "__esModule", {
+     value: true
+   });
+   exports.obj = void 0;
+   
+   var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+   
    require("regenerator-runtime/runtime");
    
    var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
    
    var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+   
+   function ownKeys(object, enumerableOnly) { ... }
+   
+   function _objectSpread(target) { ... }
    
    // 新的 JavaScript 语法
    var Point =
@@ -1782,9 +1847,9 @@ npm install --save-dev @babel/plugin-transform-runtime
      (0, _createClass2.default)(Point, [{
        key: "getX",
        value: function getX() {
-         return this.x;
+      return this.x;
        }
-     }]);
+  }]);
      return Point;
    }();
    
@@ -1817,20 +1882,45 @@ npm install --save-dev @babel/plugin-transform-runtime
          }
        });
      }
+   }
    
+   var obj = _objectSpread({}, {
+     a: 100,
+     b: 200
+   });
+   
+   exports.obj = obj;
    ```
-
-   再上面基础上再将`@babel/preset-env`的 `modules`设置为 "false"，重新编译，结果如下，是不是有小小的惊喜，至于为什么，前面有提过
-
+   
+   可以看到虽然对 "_classCallCheck"等 helper 函数做了提取操作，但是 "_objectSpread" 还是存在于代码里面
+   
+   > 而且将`@babel/plugin-transform-runtime`的`useESModules`设为 "true"，没生效？
+   
+   在上面基础上再将`@babel/preset-env`的 `modules`设置为 "false"，重新编译，结果如下，是不是有小小的惊喜，至于为什么，前面有提过
+   
    ```javascript
+   import "core-js/modules/es.symbol";
+   import "core-js/modules/es.array.filter";
    import "core-js/modules/es.array.flat";
+   import "core-js/modules/es.array.for-each";
    import "core-js/modules/es.array.unscopables.flat";
+   import "core-js/modules/es.object.define-properties";
+   import "core-js/modules/es.object.define-property";
+   import "core-js/modules/es.object.get-own-property-descriptor";
+   import "core-js/modules/es.object.get-own-property-descriptors";
+   import "core-js/modules/es.object.keys";
    import "core-js/modules/es.object.to-string";
    import "core-js/modules/es.promise";
    import "core-js/modules/esnext.global-this";
+import "core-js/modules/web.dom-collections.for-each";
+   import _defineProperty from "@babel/runtime/helpers/defineProperty";
    import "regenerator-runtime/runtime";
    import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
    import _createClass from "@babel/runtime/helpers/createClass";
+   
+   function ownKeys(object, enumerableOnly) { ... }
+   
+   function _objectSpread(target) { ... }
    
    // 新的 JavaScript 语法
    var Point =
@@ -1883,36 +1973,69 @@ npm install --save-dev @babel/plugin-transform-runtime
        });
      }
    }
+   
+   export var obj = _objectSpread({}, {
+     a: 100,
+     b: 200
+   });
    ```
-
+   
    
 
 ## 小小总结
 
-如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋，而且 `@babel/plugin-transform-runtime` 在启用 polyfill 处理时处理不了 proposal 的 API，只能选择用`@babel/plugin-transform-runtime` 去处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，还有一点是建议是将`@babel/preset-env`的 `modules`设置为 "false"
+如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋。但两者都建议将`@babel/preset-env`的 `modules`设置为 "false"。
 
-```javascript
-module.exports = {
-    presets: [
-        [
-            "@babel/preset-env",
-            {
-                useBuiltIns : "usage",
-                modules: false,
-                corejs: {version: 3, proposals: true},
-            }
-        ]
-    ],
-    plugins: [
-        [
-            "@babel/plugin-transform-runtime",
-            {
-                regenerator: false
-            }
-        ]
-    ]
-};
-```
+1. 如果是开发一个独立的工具库，不需要考虑目标运行环境（忽略 `browserslist`的配置），又想避免全局变量污染（不确定它将会被其它人用到什么运行环境里面），那建议关闭`@babel/preset-env` 启用 polyfill，使用`@babel/plugin-transform-runtime` 的 polyfill 功能
+
+   ```javascript
+   module.exports = {
+       presets: [
+           [
+               "@babel/preset-env",
+               {
+                   modules: false,
+               }
+           ]
+       ],
+       plugins: [
+           [
+               "@babel/plugin-transform-runtime",
+               {
+                   corejs: {version: 3, proposals: true},
+                   regenerator: false,
+               }
+           ]
+       ]
+   };
+   ```
+
+2. 如果是在项目中使用，需要考虑目标运行环境，只能选择用`@babel/plugin-transform-runtime` 去尽可能的处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，尽管避免不了全局变量污染，或者以后版本升级后会有变化？
+
+   ```javascript
+   module.exports = {
+       presets: [
+           [
+               "@babel/preset-env",
+               {
+                   useBuiltIns : "usage",
+                   modules: false,
+                   corejs: {version: 3, proposals: true},
+               }
+           ]
+       ],
+       plugins: [
+           [
+               "@babel/plugin-transform-runtime",
+               {
+                   regenerator: false
+               }
+           ]
+       ]
+   };
+   ```
+
+   
 
 
 
@@ -1922,4 +2045,5 @@ module.exports = {
 * [流云诸葛 babel 系列]([http://blog.liuyunzhuge.com/2019/08/23/babel%E8%AF%A6%E8%A7%A3%EF%BC%88%E4%B8%80%EF%BC%89/](http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/))
 * [不容错过的 Babel 7 知识汇总](https://mp.weixin.qq.com/s/xTfjMG2graIrfGGqhue_Jg)
 * [Babel 插件有啥用](https://zhuanlan.zhihu.com/p/61780633)
+* [babel 7 最佳实践](https://github.com/SunshowerC/blog/issues/5)
 
