@@ -1044,11 +1044,12 @@ module.exports = {
    
    function _createClass(Constructor, protoProps, staticProps) { ... }
    
+    
    // 新的 JavaScript 语法
    var Point =
-/*#__PURE__*/
+   /*#__PURE__*/
    function () {
-    function Point(x, y) {
+     function Point(x, y) {
        _classCallCheck(this, Point);
    
        this.x = x;
@@ -1059,24 +1060,21 @@ module.exports = {
        key: "getX",
        value: function getX() {
          return this.x;
-       }
+    }
      }]);
-   
+
      return Point;
    }();
    
    // 新的内置全局对象
    Promise.resolve(32).then(function (x) {
-     return console.log(x);
+    return console.log(x);
    });
-   
+
    // 实例上的新的方法
    [1, [2, 3], [4, [5]]].flat(2);
-                                                                
-   globalThis.test = {
-     a: 100
-   };
    ```
+
    
    对比编译后的代码可以发现，`globalThis` 并没有被转换，所以更改配置 "corejs:  3"为 "corejs:  {version: 3, proposals: true} "后 babel 的配置文件 `babel.config.js` 最后的内容如下
    
