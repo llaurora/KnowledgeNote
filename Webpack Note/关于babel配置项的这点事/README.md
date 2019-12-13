@@ -480,7 +480,7 @@ const func = () => {};
 
   `"usage"` | `"entry"` | `false`, defaults to `false`.
 
-  默认 "false"，不会为每个文件自动添加 polyfills，不转换`import "core-js"`和`import "@babel/polyfill" `为单独的语法填充；
+  默认 "false"，不会为每个文件自动添加 polyfills，不转换`import "core-js"` 或者 `import "@babel/polyfill" `为单独的语法填充；
 
   当设置 `useBuiltIns`为 “usage” 或者 “entry” 时，都会把 `core-js`  的 `modules` 注入到转换后的代码里面，充当 polyfills（什么是`core-js` 的 `module` ？请参考 [babel详解（四）: core-js]([http://blog.liuyunzhuge.com/2019/09/02/babel%E8%AF%A6%E8%A7%A3%EF%BC%88%E5%9B%9B%EF%BC%89-core-js/](http://blog.liuyunzhuge.com/2019/09/02/babel详解（四）-core-js/))），而从 babel 7.4.0 版本开始，`@babel/polyfill` 被废弃后，官方推荐直接添加 `core-js` 并设置`corejs`版本
 
