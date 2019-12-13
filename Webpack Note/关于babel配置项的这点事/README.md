@@ -2008,7 +2008,6 @@ npm install --save-dev @babel/plugin-transform-runtime
                "@babel/plugin-transform-runtime",
                {
                    corejs: {version: 3, proposals: true},
-                   regenerator: true,
                }
            ]
        ]
