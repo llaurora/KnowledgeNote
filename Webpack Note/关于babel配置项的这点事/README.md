@@ -1986,11 +1986,9 @@ npm install --save-dev @babel/plugin-transform-runtime
 1. 如果是开发一个独立的工具库，不需要考虑目标运行环境（忽略 `browserslist`的配置），又想避免全局变量污染（不确定它将会被其它人用到什么运行环境里面），那建议关闭`@babel/preset-env` 启用 polyfill，使用`@babel/plugin-transform-runtime` 的 polyfill 功能
 
    ```shell
-   npm install --save @babel/core
-   npm install --save @babel/preset-env
    npm install --save @babel/runtime-corejs3
    
-   npm install --save-dev @babel/plugin-transform-runtime
+   npm install --save-dev @babel/preset-env @babel/core @babel/plugin-transform-runtime
    ```
 
    ```javascript
@@ -2017,12 +2015,10 @@ npm install --save-dev @babel/plugin-transform-runtime
 2. 如果是在项目中使用，需要考虑目标运行环境，只能选择用`@babel/plugin-transform-runtime` 去尽可能的处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，尽管避免不了全局变量污染，或者以后版本升级后会有变化？
 
    ```shell
-   npm install --save @babel/core
-   npm install --save @babel/preset-env
    npm install --save core-js
    npm install --save @babel/runtime
    
-   npm install --save-dev @babel/plugin-transform-runtime
+   npm install --save-dev @babel/core @babel/preset-env @babel/plugin-transform-runtime
    ```
 
    
