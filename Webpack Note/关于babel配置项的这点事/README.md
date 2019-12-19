@@ -2015,8 +2015,7 @@ npm install --save-dev @babel/plugin-transform-runtime
 2. 如果是在项目中使用，需要考虑目标运行环境，只能选择用`@babel/plugin-transform-runtime` 去尽可能的处理`@babel/preset-env` 转换代码过程中多余的 helper 函数，其他的都交给 `@babel/preset-env`  处理吧，尽管避免不了全局变量污染，或者以后版本升级后会有变化？
 
    ```shell
-   npm install --save core-js
-   npm install --save @babel/runtime
+   npm install --save core-js @babel/runtime
    
    npm install --save-dev @babel/core @babel/preset-env @babel/plugin-transform-runtime
    ```
