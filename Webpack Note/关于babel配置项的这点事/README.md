@@ -1,8 +1,31 @@
 # 关于 babel 配置项的这点事
 
-[TOC]
+## 目录
 
-## 说明
+* [说明](#illustrate)
+* [babel 是什么](#what-babel)
+* [最新 babel 相关的 npm 包前面的 @ 符号是什么含义](#babel-@)
+* [@babel/core](#babel/core)
+* [@babel/cli](#babel/cli)
+* [babel 之 plugins](#babel-plugins)
+  * [开始使用](#plugin-start)
+  * [plugin 分类](#plugin-type)
+* [babel 配置文件](#babel-config)
+  * [Plugin and Preset 启用顺序](#use-order)
+  * [Plugin and Preset options](#plugin-order)
+* [babel 之 presets](#babel-presets)
+* [@babel/preset-env](#preset-env)
+  * [@babel/preset-env 之 options](#preset-env-options)
+  * [@babel/preset-env 之配置实践示例](#preset-env-example)
+* [babel 之 runtime](#babel-runtime)
+  * [babel 之 runtime 之 options](#babel-runtime-options)
+  * [babel 之 runtime 配置实践战示例](#babel-runtime-example)
+* [小总结](#sumup)
+* [参考链接](#refer-link)
+
+
+
+## <a name="illustrate">说明</a>
 
 1. babel是什么
 2. babel的plugins有什么作用
@@ -23,7 +46,7 @@
 
 
 
-## babel 是什么？
+## <a name="what-babel">babel 是什么？</a>
 
 简单来说，babel 就是一个 JavaScript 的语法编译器，主要用于将 ECMAScript 2015+ 代码转换为向后兼容的 JavaScript 版本，以便能够运行在当前和旧版本的浏览器或其他环境中。
 
@@ -33,7 +56,7 @@
 
 
 
-## 最新 babel 相关的 npm 包前面的 @ 符号是什么含义
+## <a name="babel-@">最新 babel 相关的 npm 包前面的 @ 符号是什么含义</a>
 
 从 babel7.0 开始，babel 一系列的包都以`@babel`开头，这个跟 babel 没关系，是npm包的一种形式，详细介绍可参考 [npm-scope](https://docs.npmjs.com/misc/scope.html)。
 
@@ -65,13 +88,13 @@ Node.js 并没有对 scope 进行特殊处理，之所以要写成`require('@myo
 
 
 
-## @babel/core
+## <a name="babel/core">@babel/core</a>
 
 Babel 的核心功能包含在 `@babel/core` 模块中。看到 `core` 这个词了吧，意味着**核心**，没有它，在 `babel` 的世界里注定寸步难行。不安装 `@babel/core`，无法使用 `babel` 进行编译。
 
 
 
-## @babel/cli
+## <a name="babel/cli">@babel/cli</a>
 
 `babel` 提供的命令行工具，可以直接通过命令行对文件或文件夹进行转换；类似 `webpack-cli` 之于 `webpack`。
 
@@ -105,7 +128,7 @@ npm install --save-dev @babel/core @babel/cli
 
 
 
-## babel 之 plugins
+## <a name="babel-plugins">babel 之 plugins</a>
 
 > Now, out of the box Babel doesn't do anything. It basically acts like `const babel = code => code;` by parsing the code and then generating the same code back out again.You will need to add plugins for Babel to do anything
 
@@ -167,7 +190,7 @@ const func = () => {};
 
 运行`npm run compiler`，转换完成后，查看`dist`目录下的`index.js`，会发现其实内容并没有任何变化，因为在开始也说了，不做任何配置的 babel，什么也不做，基本输入是什么输出就是什么（可能会有一些格式上的变化）。
 
-### 开始使用
+### <a name="plugin-start">开始使用</a>
 
 针对上面代码里面用到了 ES6 的 `const`命令以及`箭头函数`，需要相应的 plugin 来进行转换：
 
@@ -193,7 +216,7 @@ const func = () => {};
 var func = function () {};
 ```
 
-### plugin 分类
+### <a name="plugin-type">plugin 分类</a>
 
 1. syntax 语法类；
 2. transform 转换类；
@@ -217,7 +240,7 @@ Babel 编译代码的过程可分为三个阶段：解析（parsing）、转换�
 
 
 
-## babel 配置文件 `babel.config.js`
+## <a name="babel-config">babel 配置文件 `babel.config.js`</a>
 
 > babel 的配置文件还可以是 `.babelrc`、`.babelrc.js`以及`.babelrc.cjs`等，详情参考官方文档[Config Files](https://babeljs.io/docs/en/config-files)。
 
@@ -247,7 +270,7 @@ module.exports = {presets, plugins}
 
 纯字符串形式的 plugins 元素，是数组形式的简化使用。因为 plugin 是可以配置 option 的，所以纯字符串的plugin 元素，相当于全部使用 options 的默认值，不单独配置。
 
-### Plugin and Preset 启用顺序
+### <a name="use-order">Plugin and Preset 启用顺序</a>
 
 如果有这么多个 plugin，对源代码进行解析，肯定要有一个处理的先后顺序，前一个 plugin 的处理结果，将作为下一个plugin的输入，所以 babel 规定了 plugin 的启用顺序。
 
@@ -271,7 +294,7 @@ module.exports = {presets, plugins}
 
 先启用 `@babel/preset-react`，然后才是 `@babel/preset-env`。
 
-### Plugin and Preset options
+### <a name="plugin-order">Plugin and Preset options</a>
 
 babel 官方文档对 plugin 和preset 的配置有明确的声明，而且 plugin 和 preset 的配置方式是一致的，详情查看[Options 之 Plugin and Preset options](https://babeljs.io/docs/en/options)。
 
@@ -344,7 +367,7 @@ var copy = Object.assign({}, obj);
 
 
 
-## babel 之 Presets
+## <a name="babel-presets">babel 之 presets</a>
 
 上面例子在对
 
@@ -369,7 +392,7 @@ const func = () => {};
 
 
 
-## @babel/preset-env
+## <a name="preset-env">@babel/preset-env</a>
 
 > 官网传送门：[@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env)
 
@@ -433,7 +456,7 @@ const func = () => {};
 
 由于 proposal 会不断地变化，意味着 `@babel/preset-env` 也会跟着调整，所以保持`@babel/preset-env` 的更新，在平常的项目中也是比较重要的一项工作。**而也正是因为这一点，所以`@babel/preset-env`不是万能的。 如果我们用到某一个新的 ES 特性，还处于 proposal 阶段，而且 `@babel/preset-env` 不提供转码支持的话，就得自己单独配置 plugins 了。**
 
-### @babel/preset-env 之 options
+### <a name="preset-env-options">@babel/preset-env 之 options</a>
 
 * `spec`：作用同前面所述，启用松散式的代码转换
 
@@ -521,7 +544,7 @@ const func = () => {};
 
 更多 options 配置详情查看 [@babel/preset-env 之 options ](https://babeljs.io/docs/en/babel-preset-env)
 
-### @babel/preset-env 之配置实践示例
+### <a name="preset-env-example">@babel/preset-env 之配置实践示例</a>
 
 还是用之前的示例
 
@@ -1154,7 +1177,7 @@ module.exports = {
 
 
 
-## babel 之 runtime
+## <a name="babel-runtime">babel 之 runtime</a>
 
 我们还是沿用上面的例子
 
@@ -1334,7 +1357,7 @@ npm install --save @babel/runtime-corejs3
 
 开发者只需根据自己的项目需要，启用一种方式即可。
 
-### babel 之 runtime 之 options
+### <a name="babel-runtime-options">babel 之 runtime 之 options</a>
 
 * `corejs`
 
@@ -1384,7 +1407,7 @@ npm install --save @babel/runtime-corejs3
 
 更多 options 配置详情查看 [@babel/plugin-transform-runtime 之 options](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
 
-###  babel 之 runtime 配置实践战示例
+###  <a name="babel-runtime-example">babel 之 runtime 配置实践战示例</a>
 
 依然沿用上面的例子，只是为了观察 `babel的runtime` 的作用，关闭 `@babel/preset-env` 的 polyfill 功能，`babel.config.js` 配置内容如下
 
@@ -1979,7 +2002,7 @@ npm install --save-dev @babel/plugin-transform-runtime
    
    
 
-## 小总结
+## <a name="sumup">小总结</a>
 
 如果你问我现在怎么在项目里面去配置 babel，本以为`@babel/plugin-transform-runtime` 可以消除使用`@babel/preset-env` 引起的副作用，奈何实践下来，两者各有千秋。但两者都建议将`@babel/preset-env`的 `modules`设置为 "false"。
 
@@ -2049,7 +2072,7 @@ npm install --save-dev @babel/plugin-transform-runtime
 
 
 
-## 参考链接
+## <a name="refer-link">参考链接</a>
 
 * [babel 官网](https://babeljs.io/)
 * [流云诸葛 babel 系列](http://blog.liuyunzhuge.com/2019/08/23/babel详解（一）/)
