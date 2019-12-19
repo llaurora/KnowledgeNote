@@ -344,7 +344,7 @@ Mode 的用法：
 > * 有些 ES6 最新 Api，目标运行环境还没有普遍提供实现，babel 借助 core-js 对可以自动给 js 代码添加polyfill，以便最终在浏览器运行的代码能够正常使用那些 api；babel 始终能提供对最新 ES 提案的支持；
 > * ...
 >
-> 更多关于 `babel` 的介绍，请查看这篇文章 [关于 babel 配置项的这点事]([https://github.com/DlLucky/Note/tree/master/Webpack%20Note/%E5%85%B3%E4%BA%8Ebabel%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9A%84%E8%BF%99%E7%82%B9%E4%BA%8B](https://github.com/DlLucky/Note/tree/master/Webpack Note/关于babel配置项的这点事))
+> 更多关于 `babel` 的介绍，请查看这篇文章 [关于 babel 配置项的这点事](https://github.com/DlLucky/Note/tree/master/Webpack%20Note/%E5%85%B3%E4%BA%8Ebabel%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9A%84%E8%BF%99%E7%82%B9%E4%BA%8B)
 
 下面贴出 `babel` 应用于项目的配置文件 `babel.config.js`
 
@@ -381,18 +381,18 @@ npm install --save core-js @babel/runtime
 
 在 webpack 中添加 `babel-loader` 对 js 文件的解析
 
-```diff
-+ rules: [
-+          {
-+             test: /\.js$/,
-+             use: {
-+                   loader: "babel-loader",
-+                   options: {
-+                      cacheDirectory: true,
-+                  }
-+               }
-+           }
-+        ]
+```javaScript
+ rules: [
+          {
+             test: /\.js$/,
+             use: {
+                   loader: "babel-loader",
+                   options: {
+                      cacheDirectory: true,
+                  }
+               }
+           }
+        ]
 ```
 
 
