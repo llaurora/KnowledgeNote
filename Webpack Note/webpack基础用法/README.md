@@ -7,6 +7,7 @@
 3. [webpack 概念之 Loaders](#loaders)
 4. [webpack 概念之 Plugins](#plugins)
 5. [webpack 概念之 Mode](#mode)
+6. [解析 ECMAScript 2016+](#es6)
 
 ### <a name='entry'>webpack 概念之 Entry</a>
 
@@ -87,8 +88,7 @@
   // 写入到硬盘：./dist/app.js, ./dist/search.js
   ```
 
-
-### webpack 概念之 Loaders</a>
+### <a name='loaders'>webpack 概念之 Loaders</a>
 
 >  [Loaders](https://webpack.js.org/concepts/loaders/)
 
@@ -269,7 +269,7 @@ module.exports = {
 
 
 
-### webpack 概念之 Plugins</a>
+### <a name='plugins'>webpack 概念之 Plugins</a>
 
 > [Plugins](https://webpack.js.org/concepts/plugins/)
 
@@ -301,7 +301,7 @@ module.exports = {
 };
 ```
 
-### webpack 概念之 Mode</a>
+### <a name='mode'>webpack 概念之 Mode</a>
 
 > [Mode](https://webpack.js.org/configuration/mode/)（在 webpack 4 以前并没有这个概念）
 
@@ -329,4 +329,73 @@ Mode 的用法：
   ```javascript
   webpack --mode=production
   ```
+
+
+
+### <a name="es6">解析 ECMAScript 2015+</a>
+
+`webpack` 并不支持对  `ECMAScript 2015+` 的编译，得借助 `babel`，而babel-loader` 就是 `babel` 结合 `webpack` 的使用方式
+
+> `babel` 是什么？
+>
+> 简单来说，babel 就是一个 JavaScript 的语法编译器，主要用于将 ECMAScript 2015+ 代码转换为向后兼容的 JavaScript 版本，以便能够运行在当前和旧版本的浏览器或其他环境中。
+>
+> * 把 ES6 的代码转换为 ES5 代码，这样即使代码最终的运行环境（如浏览器）不支持 ES6，在开发期间也能使用最新语法提升开发效率和质量；
+> * 有些 ES6 最新 Api，目标运行环境还没有普遍提供实现，babel 借助 core-js 对可以自动给 js 代码添加polyfill，以便最终在浏览器运行的代码能够正常使用那些 api；babel 始终能提供对最新 ES 提案的支持；
+> * ...
+>
+> 更多关于 `babel` 的介绍，请查看这篇文章 [关于 babel 配置项的这点事]([https://github.com/DlLucky/Note/tree/master/Webpack%20Note/%E5%85%B3%E4%BA%8Ebabel%E9%85%8D%E7%BD%AE%E9%A1%B9%E7%9A%84%E8%BF%99%E7%82%B9%E4%BA%8B](https://github.com/DlLucky/Note/tree/master/Webpack Note/关于babel配置项的这点事))
+
+下面贴出 `babel` 应用于项目的配置文件 `babel.config.js`
+
+```javascript
+module.exports = {
+    presets: [
+        [
+            "@babel/preset-env",
+            {
+                useBuiltIns : "usage",
+                modules: false,
+                corejs: {version: 3, proposals: true},
+            }
+        ]
+    ],
+    plugins: [
+        [
+            "@babel/plugin-transform-runtime",
+            {
+                regenerator: false
+            }
+        ]
+    ]
+};
+```
+
+并安装相应的 npm 包
+
+```shell
+npm install --save-dev babel-loader @babel/core @babel/preset-env @babel/plugin-transform-runtime
+
+npm install --save core-js @babel/runtime
+```
+
+在 webpack 中添加 `babel-loader` 对 js 文件的解析
+
+```diff
++ rules: [
++          {
++             test: /\.js$/,
++             use: {
++                   loader: "babel-loader",
++                   options: {
++                      cacheDirectory: true,
++                  }
++               }
++           }
++        ]
+```
+
+
+
+
 
