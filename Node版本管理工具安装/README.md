@@ -1,3 +1,0 @@
-## Node 版本管理工具安装
-### [Mac上node管理工具安装](https://github.com/DlLucky/Note/blob/master/Node%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85/Mac%E4%B8%8Anode%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85.md)
-### [Windows上node管理工具安装](https://github.com/DlLucky/Note/blob/master/Node%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85/Windows%E4%B8%8Anode%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85.md)

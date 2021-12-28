@@ -1,8 +1,0 @@
-{
-  "success": true,
-  "errorMsg": null,
-  "result":{
-    "userName":"Joker",
-    "userPwd":123456
-  }
-}
