@@ -149,7 +149,7 @@ console.log(a + b);
 # HTML 官方规范的摘录
 
 > 在 [HTML 规范规范](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue) 中并没有宏任务（MacroTask）这一概念，里面的 Task 就是通常所说的 MacroTask
-> 
+
 1. Each [agent](https://tc39.es/ecma262/#sec-agents) has an associated event loop, which is unique to that agent
    
     每一个代理客户端都有一个与之关联的事件循环，并且唯一
@@ -246,10 +246,9 @@ console.log(a + b);
     > 2. For each [environment settings object](https://html.spec.whatwg.org/multipage/webappapis.html#environment-settings-object) settings of oldestTask's [script evaluation environment settings object set](https://html.spec.whatwg.org/multipage/webappapis.html#script-evaluation-environment-settings-object-set), [append](https://infra.spec.whatwg.org/#set-append) setting's [top-level browsing context](https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context) to top-level browsing contexts
     > 3. [Report long tasks](https://w3c.github.io/longtasks/#report-long-tasks), passing in taskStartTime, now (the end time of the task), top-level browsing contexts, and oldestTask
 
-7. 进入<a name="rendering">更新渲染阶段</a>，判断是否需要渲染，在这里有个  [rendering opportunity(渲染时机)](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的概念，并不一定每一轮 event loop 都会对应一次浏览器渲染
+7. 进入更新渲染阶段，判断是否需要渲染，在这里有个  [rendering opportunity(渲染时机)](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的概念，并不一定每一轮 event loop 都会对应一次浏览器渲染
 
     > 1. *Rendering opportunities*: Remove from docs all [Document](https://html.spec.whatwg.org/multipage/dom.html#document) objects whose [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc) do not have a [rendering opportunity](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity)【如果判断当前文档不需要渲染，则移除所有 docs，不进入更新渲染】
-    >
     >    1. [Browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context) [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) are determined based on hardware constraints such as display refresh rates and other factors such as page performance or whether the document's [visibility state](https://html.spec.whatwg.org/multipage/interaction.html#visibility-state) is "`visible`". Rendering opportunities typically occur at regular intervals【rendering opportunity 取决于屏幕刷新率、页面性能以及页面是否在后台运行等因素， rendering opportunity 通常来说是定期出现的】
     >
     >    2. This specification does not mandate any particular model for selecting rendering opportunities. But for example, if the browser is attempting to achieve a 60Hz refresh rate, then rendering opportunities occur at a maximum of every 60th of a second (about 16.7ms). If the browser finds that a [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context) is not able to sustain this rate, it might drop to a more sustainable 30 rendering opportunities per second for that [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context), rather than occasionally dropping frames.【如果屏幕刷新率为 60Hz，浏览器会试图达到 60fps 的帧速率，也就是浏览器在1秒内最多会出现 60 次的渲染机会，也就是每隔 16.7ms 会出现1次渲染时机，并且浏览器会尽可能的保持帧速率稳定，例如页面性能无法维持 60fps 的话，那么浏览器就会选择 30fps 的帧速率以避免偶尔丢帧（虽然可能不如 60fps 流畅会有些许卡顿，但至少能保证不丢帧）】
@@ -271,27 +270,7 @@ console.log(a + b);
     > 4. the user agent believes that it's preferrable to skip updating the rendering for other reasons【代理客户端判定因为其他原因，最好跳过更新渲染】
     >
     >    1. This step enables the user agent to prevent the steps below from running for other reasons, for example, to ensure certain [tasks](https://html.spec.whatwg.org/multipage/webappapis.html#concept-task) are executed immediately after each other, with only [microtask checkpoints](https://html.spec.whatwg.org/multipage/webappapis.html#perform-a-microtask-checkpoint) interleaved (and without, e.g., [animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#run-the-animation-frame-callbacks) interleaved). Concretely, a user agent might wish to coalesce timer callbacks together, with no intermediate rendering updates【有时浏览器希望两次定时器任务是合并的，它们之间只会穿插这微任务的执行，而不会穿插屏幕渲染相关的流程（比如 requestAnimationFrame）】
-    >
-    > 5. 
-
-    1. *Rendering opportunities*: Remove from docs all `[Document](https://html.spec.whatwg.org/multipage/dom.html#document)` objects whose [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc) do not have a [rendering opportunity](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity)【如果判断当前文档不需要渲染，则移除所有 docs，不进入更新渲染】
-
-        1. [Browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context) [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) are determined based on hardware constraints such as display refresh rates and other factors such as page performance or whether the document's [visibility state](https://html.spec.whatwg.org/multipage/interaction.html#visibility-state) is "`visible`". Rendering opportunities typically occur at regular intervals【rendering opportunity 取决于屏幕刷新率、页面性能以及页面是否在后台运行等因素， rendering opportunity 通常来说是定期出现的】
-        2. This specification does not mandate any particular model for selecting rendering opportunities. But for example, if the browser is attempting to achieve a 60Hz refresh rate, then rendering opportunities occur at a maximum of every 60th of a second (about 16.7ms). If the browser finds that a [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context) is not able to sustain this rate, it might drop to a more sustainable 30 rendering opportunities per second for that [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context), rather than occasionally dropping frames.【如果屏幕刷新率为 60Hz，浏览器会试图达到 60fps 的帧速率，也就是浏览器在1秒内最多会出现 60 次的渲染机会，也就是每隔 16.7ms 会出现1次渲染时机，并且浏览器会尽可能的保持帧速率稳定，例如页面性能无法维持 60fps 的话，那么浏览器就会选择 30fps 的帧速率以避免偶尔丢帧（虽然可能不如 60fps 流畅会有些许卡顿，但至少能保证不丢帧）】
-           
-            *关于屏幕刷新率和浏览器帧速率，请看下面章节【[屏幕刷新率与浏览器帧速率](https://www.notion.so/Event-Loop-b027477804d04c938a0aad91d372a900)】*
-            
-        3.  Similarly, if a [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#browsing-context) is not visible, the user agent might decide to drop that page to a much slower 4 rendering opportunities per second, or even less【如果浏览器上下文不可见，那么页面会降低到 4fps 左右的帧速率甚至更低（1秒内最多出现 4 次渲染时机）】
-    2. If docs is not empty, then set hasARenderingOpportunity to true and set this [event loop](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop)'s [last render opportunity time](https://html.spec.whatwg.org/multipage/webappapis.html#last-render-opportunity-time) to taskStartTime【如果要 docs 不为空，需要进入更新渲染，设置 hasARenderingOpportunity 为 true】
-    3. Unnecessary rendering: Remove from docs all `[Document](https://html.spec.whatwg.org/multipage/dom.html#document)` objects which meet both of the following conditions【如果以下条件都满足，也会跳过更新渲染】
-        1. The user agent believes that updating the rendering of the `[Document](https://html.spec.whatwg.org/multipage/dom.html#document)`'s [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc) would have no visible effec【浏览器判断更新渲染不会带来视觉上的改变】
-        2. the `[Document](https://html.spec.whatwg.org/multipage/dom.html#document)`'s [map of animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#list-of-animation-frame-callbacks) is empty 【帧动画回调为空（可以通过 `requestAnimationFrame`  来请求帧动画）】
-
-        这段是对上面这个 [map of animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#list-of-animation-frame-callbacks)  一个释义：Each [target object](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#concept-animationframeprovider-target-object) has a map of animation frame callbacks, which is an [ordered map](https://infra.spec.whatwg.org/#ordered-map) that must be initially empty, and an animation frame callback identifier, which is a number that must initially be zero，从释义可以看出 map of animation frame callbacks 的这个 map 是一个[有序的 Map 结构](https://infra.spec.whatwg.org/#ordered-map) ！！！
-
-    4. the user agent believes that it's preferrable to skip updating the rendering for other reasons【代理客户端判定因为其他原因，最好跳过更新渲染】
-        1. This step enables the user agent to prevent the steps below from running for other reasons, for example, to ensure certain [tasks](https://html.spec.whatwg.org/multipage/webappapis.html#concept-task) are executed immediately after each other, with only [microtask checkpoints](https://html.spec.whatwg.org/multipage/webappapis.html#perform-a-microtask-checkpoint) interleaved (and without, e.g., [animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#run-the-animation-frame-callbacks) interleaved). Concretely, a user agent might wish to coalesce timer callbacks together, with no intermediate rendering updates【有时浏览器希望两次定时器任务是合并的，它们之间只会穿插这微任务的执行，而不会穿插屏幕渲染相关的流程（比如 requestAnimationFrame）】
-
+    
 8. 如果在上面第 7 步，浏览器判断这一次事件循环不需要更新渲染，那下面9步到13步也会跳过
 
 9. 对于需要渲染的文档，如果窗口的大小发生了变化，执行监听的 resize 方法【For each [fully active](https://html.spec.whatwg.org/multipage/browsers.html#fully-active) [Document](https://html.spec.whatwg.org/multipage/dom.html#document) in docs, [run the resize steps](https://drafts.csswg.org/cssom-view/#run-the-resize-steps) for that [Document](https://html.spec.whatwg.org/multipage/dom.html#document)[[CSSOMVIEW]](https://html.spec.whatwg.org/multipage/references.html#refsCSSOMVIEW)】
@@ -306,7 +285,7 @@ console.log(a + b);
 
 13. 对于需要渲染的文档，重新渲染绘制用户界面【For each [fully active](https://html.spec.whatwg.org/multipage/browsers.html#fully-active) [Document](https://html.spec.whatwg.org/multipage/dom.html#document) in docs, update the rendering or user interface of that [Document](https://html.spec.whatwg.org/multipage/dom.html#document) and its [browsing context](https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc) to reflect the current state】 [渲染流水线](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/%E6%B8%B2%E6%9F%93%E6%B5%81%E6%B0%B4%E7%BA%BF.md) 
 
-14. 如果是浏览器窗口事件循环、没有(宏)任务、微任务队列为空并且 hasARenderingOpportunity 为 false 的话，则依据 computeDeadline 以<a name="rIC">启动空闲期算法</a>，即 [requestIdleCallback](https://w3c.github.io/requestidlecallback/)
+14. 如果是浏览器窗口事件循环、没有(宏)任务、微任务队列为空并且 hasARenderingOpportunity 为 false 的话，则依据 computeDeadline 以启动空闲期算法，即 [requestIdleCallback](https://w3c.github.io/requestidlecallback/)
 
      > If all of the following are true
      >
@@ -368,9 +347,9 @@ console.log(a + b);
 
 ## rAF 的执行时机
 
-准确来说，应该是 rAF 回调函数的执行时机，根据  [MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)  可以得出其是在下次重绘之前执行，根据上面的 [事件循环模型](https://www.notion.so/Event-Loop-b027477804d04c938a0aad91d372a900) 具体来说，rAF 的回调执行时机（得以执行的前提是得有 rendering opportunity 并且 [map of animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#list-of-animation-frame-callbacks)  不为空，至于这个 map 上面有解释过）是在微任务之后，重新执行渲染之前。
+准确来说，应该是 rAF 回调函数的执行时机，根据  [MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)  可以得出其是在下次重绘之前执行，根据上面的 [事件循环模型](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) 具体来说，rAF 的回调执行时机（得以执行的前提是得有 rendering opportunity 并且 [map of animation frame callbacks](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#list-of-animation-frame-callbacks)  不为空，至于这个 map 上面有解释过）是在微任务之后，重新执行渲染之前。
 
-由于需要进入到 <a herf="#rendering">更新渲染</a> 阶段，才有得以执行的机会，渲染时机（rendering opportunities）又与屏幕刷新率、页面性能等有关系，一般来说屏幕刷新率 60Hz，也就是每隔 16.7ms 轮得到一次进入更新渲染的机会，但不管是否在这一次 event loop 中有进入到更新渲染，但 rAF 的回调一定是在页面重新绘制前执行（给了你最后一次可更改渲染效果的机会），这能保证在 rAF 回调里对渲染效果做的更改，能在页面重新绘制的时候立马生效。
+由于需要进入到 [更新渲染](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) 阶段，才有得以执行的机会，渲染时机（rendering opportunities）又与屏幕刷新率、页面性能等有关系，一般来说屏幕刷新率 60Hz，也就是每隔 16.7ms 轮得到一次进入更新渲染的机会，但不管是否在这一次 event loop 中有进入到更新渲染，但 rAF 的回调一定是在页面重新绘制前执行（给了你最后一次可更改渲染效果的机会），这能保证在 rAF 回调里对渲染效果做的更改，能在页面重新绘制的时候立马生效。
 
 而用 setTimeout 做 JavaScript 动画的话，无论如何，该 setTimeout 的回调都在下一轮事件循环中去了，而又因为可能要执行了其他优先级更高的任务，setTimeout 的回调会被阻塞，即使不阻塞，浏览器出于性能考虑等因素，两次(宏)任务可能会合并，也就是中间不一定穿插有渲染相关的流程，并不稳定，后面通过例子细讲。
 
@@ -395,7 +374,7 @@ element.addEventListener("click", () => {
 
 ![rafsettimeout.jpg](./assets/rafsettimeout.jpg)
 
-之所以会出现这两种情况，最主要的还是跟 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 有关系，在点击事件触发时，() ⇒ {...} 整个代码作为一个(宏)任务被事件循环抓取执行，先输出分隔线，setTimeout 的回调会在 4ms 后进入(宏)任务队列（setTimeout 有一个最小延迟时间，具体的请查看 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout)），而 rAF 的回调得在事件循环进入到 <a herf="#rendering">更新渲染阶段</a> 才能得以执行，也就是在这一轮事件循环中不一定进入得到更新渲染流程，也就不一定得以执行 rAF 的回调，下面分情况描述以下具体过程：
+之所以会出现这两种情况，最主要的还是跟 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 有关系，在点击事件触发时，() ⇒ {...} 整个代码作为一个(宏)任务被事件循环抓取执行，先输出分隔线，setTimeout 的回调会在 4ms 后进入(宏)任务队列（setTimeout 有一个最小延迟时间，具体的请查看 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout)），而 rAF 的回调得在事件循环进入到 [更新渲染阶段](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) 才能得以执行，也就是在这一轮事件循环中不一定进入得到更新渲染流程，也就不一定得以执行 rAF 的回调，下面分情况描述以下具体过程：
 
 1. rAFCallback 先、timeoutCallback 后
    
@@ -473,7 +452,7 @@ requestIdleCallback 参数说明：window.requestIdleCallback(callback[, options
 - callback：一个在事件循环空闲时被调用的函数。函数会接收到一个名为 `[IdleDeadline](https://developer.mozilla.org/zh-CN/docs/Web/API/IdleDeadline)` 的参数，这个参数可以获取当前空闲时间（IdelDeadline.timeRemaining()，该返回值是一个高精度时间 `[DOMHighResTimeStamp](https://w3c.github.io/hr-time/#dom-domhighrestimestamp)` ）以及回调是否在超时时间前已经执行的状态（IdelDeadline.didTimeout，这是一个布尔值）
 - options(可选)：可选的配置参数，有一个 timeout 的属性，如果指定了 timeout，并且有一个正值，而回调在timeout毫秒过后还没有被调用，那么回调任务将放入事件循环中排队（放入 task queen），即使这样做有可能对性能产生负面影响
 
-从 Vsync 时钟周期，帧图读取这个周期的角度来看的话，在两帧之间包含用户交互、JavaScript  的执行、布局计算及页面重绘等工作（就是事件循环那一套），假如屏幕刷新率为 60Hz，Vsync 的时钟周期为 16.7ms，如果在某一帧里执行完上面步骤（即来到 <a herf="#rIC">事件循环处理模型的第 14 步</a> ），还不到 16.7 ms，那么这一帧就会有一定的空闲时间，这段空闲期就恰好可以用来执行 requestIdlCallback 的回调（执行的时候浏览器会通过  [idle period algorithm(空闲期算法)](https://w3c.github.io/requestidlecallback/#start-an-idle-period-algorithm) 得出 deadline，然后给到 requestIdleCallback 的回调 callback？），下图为渲染有序进行（浏览器 - 用户 - 浏览器 - 用户）时 idle period(空闲期) 的一个示意：
+从 Vsync 时钟周期，帧图读取这个周期的角度来看的话，在两帧之间包含用户交互、JavaScript  的执行、布局计算及页面重绘等工作（就是事件循环那一套），假如屏幕刷新率为 60Hz，Vsync 的时钟周期为 16.7ms，如果在某一帧里执行完上面步骤（即来到 [事件循环处理模型的第 14 步](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) ），还不到 16.7 ms，那么这一帧就会有一定的空闲时间，这段空闲期就恰好可以用来执行 requestIdlCallback 的回调（执行的时候浏览器会通过  [idle period algorithm(空闲期算法)](https://w3c.github.io/requestidlecallback/#start-an-idle-period-algorithm) 得出 deadline，然后给到 requestIdleCallback 的回调 callback？），下图为渲染有序进行（浏览器 - 用户 - 浏览器 - 用户）时 idle period(空闲期) 的一个示意：
 
 ![interFrameIdlePeriod.jpg](./assets/interFrameIdlePeriod.jpg)
 
