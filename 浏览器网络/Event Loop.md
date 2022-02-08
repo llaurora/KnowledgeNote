@@ -351,6 +351,52 @@ console.log(a + b);
 
 而用 setTimeout 做 JavaScript 动画的话，无论如何，该 setTimeout 的回调都在下一轮事件循环中去了，而又因为可能要执行了其他优先级更高的任务，setTimeout 的回调会被阻塞，即使不阻塞，浏览器出于性能考虑等因素，两次(宏)任务可能会合并，也就是中间不一定穿插有渲染相关的流程，并不稳定，后面通过例子细讲。
 
+## setTimeout
+
+这个就不多说了，只是说一下 setTimeout 有一个时间延迟的问题
+
+```javascript
+setTimeout(() => {
+    console.log(5);
+}, 5);
+setTimeout(() => {
+    console.log(4);
+}, 4);
+setTimeout(() => {
+    console.log(3);
+}, 3);
+setTimeout(() => {
+    console.log(2);
+}, 2);
+setTimeout(() => {
+    console.log(1);
+}, 1);
+setTimeout(() => {
+    console.log(0);
+}, 0);
+// Chorme 中打印顺序：1、0、2、3、4、5
+```
+
+上面的打印顺序为什么不是 4、3、2、1、0、5，根据 [MDN的setTimeout文档](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout#%E5%AE%9E%E9%99%85%E5%BB%B6%E6%97%B6%E6%AF%94%E8%AE%BE%E5%AE%9A%E5%80%BC%E6%9B%B4%E4%B9%85%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A%E6%9C%80%E5%B0%8F%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4) 不是说 setTimeout 有一个最低 4ms 的延迟吗？
+
+仔细看 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout#%E5%AE%9E%E9%99%85%E5%BB%B6%E6%97%B6%E6%AF%94%E8%AE%BE%E5%AE%9A%E5%80%BC%E6%9B%B4%E4%B9%85%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A%E6%9C%80%E5%B0%8F%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4) 和 [HTML规范](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) 其实都有提到这个 4ms 的最低延迟是有前提限制的，在 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout#%E5%AE%9E%E9%99%85%E5%BB%B6%E6%97%B6%E6%AF%94%E8%AE%BE%E5%AE%9A%E5%80%BC%E6%9B%B4%E4%B9%85%E7%9A%84%E5%8E%9F%E5%9B%A0%EF%BC%9A%E6%9C%80%E5%B0%8F%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4) 中是说得嵌套层级达到一定深度，在 [HTML规范](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) 明确有说到如果嵌套层级大于 5，并且 timeout 的值小于 4ms，则将 timeout 设置为 4ms，其实在 [MDN 英文文档](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified) 中也已经更新了现在和  [HTML规范](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) 是一致的。
+
+[HTML规范](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) 中：*Timers can be nested; after five such nested timers, however, the interval is forced to be at least four milliseconds。*
+
+[MDN 英文文档](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified) 中：As specified in the [HTML standard](https://www.whatwg.org/specs/web-apps/current-work/multipage/timers.html#timers), browsers will enforce a minimum timeout of 4 milliseconds once a nested call to setTimeout has been scheduled 5 times。
+
+那既然上面不满足 4ms 最低延迟的条件，为什么不是 0、1、2、3、4、5 ？
+
+从实际测试看得出在 Chrome 浏览器中 0ms 和 1ms 的延时效果是一致的，至于为什么是 1ms，这个和各家浏览器厂商的具体实现有关，这儿只聊在 Chrome 中的表现
+
+```shell
+// https://chromium.googlesource.com/chromium/blink/+/master/Source/core/frame/DOMTimer.cpp#93
+
+double intervalMilliseconds = std::max(oneMillisecond, interval * oneMillisecond);
+```
+
+这里 interval 就是传入的数值，可以看出传入 0 和传入 1 结果都是 oneMillisecond，即 1ms，这也就能解释在 Chorme 浏览器中为什么 0ms 和 1ms 的表现是一样的了，所以在 Chrome 中正确的打印顺序是 、0、2、3、4、5。
+
 ## rAF 与 setTimeout
 
 ```jsx
@@ -372,15 +418,15 @@ element.addEventListener("click", () => {
 
 ![rafsettimeout.jpg](./assets/rafsettimeout.jpg)
 
-之所以会出现这两种情况，最主要的还是跟 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 有关系，在点击事件触发时，() ⇒ {...} 整个代码作为一个(宏)任务被事件循环抓取执行，先输出分隔线，setTimeout 的回调会在 4ms 后进入(宏)任务队列（setTimeout 有一个最小延迟时间，具体的请查看 [MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout)），而 rAF 的回调得在事件循环进入到 [更新渲染阶段](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) 才能得以执行，也就是在这一轮事件循环中不一定进入得到更新渲染流程，也就不一定得以执行 rAF 的回调，下面分情况描述以下具体过程：
+之所以会出现这两种情况，最主要的还是跟 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 有关系，在点击事件触发时，() ⇒ {...} 整个代码作为一个(宏)任务被事件循环抓取执行，先输出分隔线，setTimeout 的回调会在 1ms 后进入(宏)任务队列（为什么是 1ms，上面有解释过），而 rAF 的回调得在事件循环进入到 [更新渲染阶段](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) 才能得以执行，也就是在这一轮事件循环中不一定进入得到更新渲染流程，也就不一定得以执行 rAF 的回调，下面分情况描述以下具体过程：
 
 1. rAFCallback 先、timeoutCallback 后
    
-    在执行() ⇒ {...} 的时候，4ms 后 timeoutCallback 被放进(宏)任务队列，而进入到更新渲染阶段的时候，刚好碰上了出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机（距离上一次渲染时机过了 16.7ms），则在这一次事件循环中，就立马执行了 rAFCallback，然后再在下一次事件循环中执行 timeoutCallback
+    在执行() ⇒ {...} 的时候，1ms 后 timeoutCallback 被放进(宏)任务队列，而进入到更新渲染阶段的时候，刚好碰上了出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机（距离上一次渲染时机过了 16.7ms），则在这一次事件循环中，就立马执行了 rAFCallback，然后再在下一次事件循环中执行 timeoutCallback
     
 2. rAFCallback 后、timeoutCallback 先
    
-    在执行() ⇒ {...} 的时候，4ms 后 timeoutCallback 被放进(宏)任务队列，而进入到更新渲染阶段的时候，这时没碰上出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机（距离上一次渲染时机可能才过了 8ms，显示器从前缓冲区读取帧图才过去 8ms ），则在这一次事件循环中，就会跳过更新渲染，然后在下一次事件循环中执行 timeoutCallback，然后又进入更新渲染阶段，看这个时候轮到出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机没，轮到了就执行 rAFCallback，没轮到的话就又后面去了，但总归是 rAFCallback 后、timeoutCallback 先了
+    在执行() ⇒ {...} 的时候，1ms 后 timeoutCallback 被放进(宏)任务队列，而进入到更新渲染阶段的时候，这时没碰上出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机（距离上一次渲染时机可能才过了 8ms，显示器从前缓冲区读取帧图才过去 8ms ），则在这一次事件循环中，就会跳过更新渲染，然后在下一次事件循环中执行 timeoutCallback，然后又进入更新渲染阶段，看这个时候轮到出现 [rendering opportunities](https://html.spec.whatwg.org/multipage/webappapis.html#rendering-opportunity) 的时机没，轮到了就执行 rAFCallback，没轮到的话就又后面去了，但总归是 rAFCallback 后、timeoutCallback 先了
     
 
 再看一下分别用 setTimeout 做的动画和用 rAF 做的动画
@@ -405,7 +451,7 @@ btn.addEventListener("click", animation);
 
 ![rafAnimation.gif](./assets/rafAnimation.gif)
 
-然后再来看下用 setTimeout 来实现（setTimeout 有一个最小延迟时间，所以虽然将 setTimeout 的延迟设置为 0，但是无论如何都有约 4ms 的延迟，大体上也不影响模拟）
+然后再来看下用 setTimeout 来实现
 
 ```javascript
 const element = document.querySelector("#animationExample");
@@ -415,7 +461,7 @@ let i = 0;
 const animation = ()=> {
     element.style.marginLeft = `${i}px`;
 		// 执行间隔设置为 0，来模拟 requestAnimationFrame
-    timerId = setTimeout(animation, 0);
+    timerId = setTimeout(animation, 0); // 实际上0ms和1ms效果是一样的（至少在Chrome中是）
     i += 1;
     if (i > 200) {
         clearTimeout(timerId);
@@ -532,7 +578,7 @@ console.log("j");
 
 1. 整个 script 代码作为(macro)task 被放入 call stack 中执行，同步代码按照从上到下，从左到右的顺序依次执行，碰到 (macro)task 代码放进 task queen，碰到 microtask 放到 microtask queen；
 2.  async1、async2 为函数声明略过，执行 console.log(”d”) 输出 d；
-3. setTimeout 为宏任务，4ms 后（setTimeout 有一个最小延迟时间）将 console.log("e") 放进 task queen，假设叫 (macro)task E；
+3. setTimeout 为宏任务，1ms 后（为什么是 1ms，上面有解释过）将 console.log("e") 放进 task queen，假设叫 (macro)task E；
 4. 执行 async1，输出 a，然后执行到 async2，输出 c，将 async1 中 await 左边部分放进 microtask queen，假设叫 microtask B；
 5. 执行 new Promise 中同步代码，输出 g，将 console.log(”h”) 放进 microtask queen，假设叫 microtask H；
 6. 执行 console.log(”j”) 输出 j；
@@ -563,8 +609,6 @@ console.log("j");
 
 [MDN requestAnimationFrame](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame)
 
-[Using requestIdleCallback](https://developers.google.com/web/updates/2015/08/using-requestidlecallback)
-
 [深入解析你不知道的 EventLoop 和浏览器渲染、帧动画、空闲回调](https://cloud.tencent.com/developer/article/1633898)
 
 [事件原理讲解，超级硬核](https://www.bilibili.com/video/BV1K4411D7Jb?spm_id_from=333.999.0.0)
@@ -582,3 +626,5 @@ console.log("j");
 [浏览器进程？线程？傻傻分不清楚！](https://imweb.io/topic/58e3bfa845e5c13468f567d5)
 
 [JavaScript 运行机制详解：再谈Event Loop](http://www.ruanyifeng.com/blog/2014/10/event-loop.html)
+
+[Event Loop的规范和实现](https://juejin.cn/post/6844903552402325511)
