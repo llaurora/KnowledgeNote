@@ -447,7 +447,7 @@ setTimeout(() => {
 
 requestIdleCallback 参数说明：window.requestIdleCallback(callback[, options]); 
 
-- callback：一个在事件循环空闲时被调用的函数。函数会接收到一个名为 `[IdleDeadline](https://developer.mozilla.org/zh-CN/docs/Web/API/IdleDeadline)` 的参数，这个参数可以获取当前空闲时间（IdelDeadline.timeRemaining()，该返回值是一个高精度时间 `[DOMHighResTimeStamp](https://w3c.github.io/hr-time/#dom-domhighrestimestamp)` ）以及回调是否在超时时间前已经执行的状态（IdelDeadline.didTimeout，这是一个布尔值）
+- callback：一个在事件循环空闲时被调用的函数。函数会接收到一个名为 [IdleDeadline](https://developer.mozilla.org/zh-CN/docs/Web/API/IdleDeadline) 的参数，这个参数可以获取当前空闲时间（IdelDeadline.timeRemaining()，该返回值是一个高精度时间 [DOMHighResTimeStamp](https://w3c.github.io/hr-time/#dom-domhighrestimestamp) ）以及回调是否在超时时间前已经执行的状态（IdelDeadline.didTimeout，这是一个布尔值）
 - options(可选)：可选的配置参数，有一个 timeout 的属性，如果指定了 timeout，并且有一个正值，而回调在timeout毫秒过后还没有被调用，那么回调任务将放入事件循环中排队（放入 task queen），即使这样做有可能对性能产生负面影响
 
 从 Vsync 时钟周期，帧图读取这个周期的角度来看的话，在两帧之间包含用户交互、JavaScript  的执行、布局计算及页面重绘等工作（就是事件循环那一套），假如屏幕刷新率为 60Hz，Vsync 的时钟周期为 16.7ms，如果在某一帧里执行完上面步骤（即来到 [事件循环处理模型的第 14 步](https://github.com/llaurora/KnowledgeNote/blob/master/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BD%91%E7%BB%9C/Event%20Loop.md) ），还不到 16.7 ms，那么这一帧就会有一定的空闲时间，这段空闲期就恰好可以用来执行 requestIdlCallback 的回调（执行的时候浏览器会通过  [idle period algorithm(空闲期算法)](https://w3c.github.io/requestidlecallback/#start-an-idle-period-algorithm) 得出 deadline，然后给到 requestIdleCallback 的回调 callback？），下图为渲染有序进行（浏览器 - 用户 - 浏览器 - 用户）时 idle period(空闲期) 的一个示意：
