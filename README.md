@@ -8,3 +8,4 @@
 
 ### Shell
 * [Git](https://github.com/llaurora/KnowledgeNote/blob/master/Shell/Git.md)
+* [Package Manager](https://github.com/llaurora/KnowledgeNote/blob/master/Shell/pkg%20manager.md)
