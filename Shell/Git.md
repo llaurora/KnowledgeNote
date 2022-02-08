@@ -2,21 +2,21 @@
 
 ---
 
-### git 删除远程 Tag
+## Git 删除远程 Tag
 
 ```bash
 git tag -d tag-name
 git push origin :refs/tags/tag-name
 ```
 
-### git 回退版本并提交到远程分支
+## Git 回退版本并提交到远程分支
 
 ```bash
 git reset --hard commitId
 git push -f origin branchName
 ```
 
-### 使用 shell 批量修改 git 提交作者和邮箱
+## 使用 Shell 批量修改 Git 提交作者和邮箱
 
 新建 rewrite.sh 脚本并运行
 
@@ -48,7 +48,7 @@ fi
 git push --force --tags origin 'refs/heads/*'
 ```
 
-### git 修改账户信息
+## Git 修改账户信息
 
 ```bash
 // 查看 Git 配置
@@ -61,4 +61,13 @@ git config --global user.email "Author Email"
 // 修改本地项目仓库账户信息
 git config user.name "Author Name"
 git config user.email "Author Email"
+```
+
+## Git 根据 Tag 创建分支
+```bash
+// 根据 Tag 创建分支
+git branch <new-branch-name> <tag-name>
+
+// 切换到新的分支
+git checkout newbranch
 ```
