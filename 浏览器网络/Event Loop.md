@@ -534,7 +534,7 @@ React 的时间分片渲染曾想要用到这个 API，但由于 requestIdleCall
 
 # 面试题
 
-关于 async/await ，async/await 实质上还是基于 Promise 的一些封装，async 函数执行后的返回值是一个 Promise， async 函数中 await 上面的代码和紧邻 await 后面的代码可视作 new Promise() 时传入的代码，而 await 左侧的代码以及 await 后面的代码可视作 Promise.then() 中的代码。
+关于 async/await ，async/await 实质上还是基于 Promise 的一些封装（严谨点儿说是基于 Generator + 自执行器（比如 co） + Promise 的封装，更多的请移步 [JS异步编程史](https://github.com/llaurora/KnowledgeNote/blob/master/JavaScript/JS%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%8F%B2.md)  ），async 函数执行后的返回值是一个 Promise， async 函数中 await 上面的代码和紧邻 await 后面的代码可视作 new Promise() 时传入的代码，而 await 左侧的代码以及 await 后面的代码可视作 Promise.then() 中的代码
 
 ```javascript
 async function async1() {
