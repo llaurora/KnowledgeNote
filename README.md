@@ -1,3 +1,4 @@
+## <img src="https://cultofthepartyparrot.com/guests/hd/partyblobcat.gif" width="30" height="30"/> 洋洋晒晒 当个写手
 ### JavaScript
 * [JavaScript异步编程史](https://github.com/llaurora/KnowledgeNote/blob/master/JavaScript/JS%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%8F%B2.md)
 * [utils常用工具函数](https://github.com/llaurora/KnowledgeNote/blob/master/JavaScript/utils.md)
