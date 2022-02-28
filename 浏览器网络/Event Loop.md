@@ -397,6 +397,36 @@ double intervalMilliseconds = std::max(oneMillisecond, interval * oneMillisecond
 
 这里 interval 就是传入的数值，可以看出传入 0 和传入 1 结果都是 oneMillisecond，即 1ms，这也就能解释在 Chorme 浏览器中为什么 0ms 和 1ms 的表现是一样的了，所以在 Chrome 中正确的打印顺序是 、0、2、3、4、5。
 
+如果在中间加入一断同步阻塞代码呢？
+
+```js
+const d1 = Date.now();
+let d2 = Date.now();
+setTimeout(() => {
+    console.log(5);
+}, 5);
+while (d2 - d1 < 5000) {
+    d2 = Date.now();
+};
+setTimeout(() => {
+    console.log(4);
+}, 4);
+setTimeout(() => {
+    console.log(3);
+}, 3);
+setTimeout(() => {
+    console.log(2);
+}, 2);
+setTimeout(() => {
+    console.log(1);
+}, 1);
+setTimeout(() => {
+    console.log(0);
+}, 0);
+// Chorme 中打印顺序：5、1、0、2、3、4
+```
+这儿主要解释下为什么是先输出 5，整个代码作为(宏)任务被放入调用栈执行，遇到 5ms那个 setTimeout 时，将其放入主线程之外的其他线程倒计时，继续执行，遇到 while循环 同步阻塞代码，5ms后才能继续后面的代码，等执行到 4ms 的 setTimeout 被放入其他线程倒计时时，之前其他线程中 5ms 那个 setTimeout 已经倒计时完成，被放入(宏)任务队列，所以在一轮事件循环时，5ms 那个顺序是优于后面的 setTimeout 的，至于后面的顺序为什么 1、0、2、3、4，原因上面已经解释过了。
+
 ## rAF 与 setTimeout
 
 ```jsx
