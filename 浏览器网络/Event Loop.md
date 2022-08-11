@@ -530,7 +530,45 @@ setTimeout(() => {
   requestAnimationFrame(() => console.log("rAF"))
 })
 ```
+另外 rAF 的回调任务中如果生成了微任务，则执行完该任务后会执行完所有的微任务，然后再执行下一个任务，注意区别下面两段代码的输出。
+```javascript
+requestAnimationFrame(() => {
+    console.log(1);
+    setTimeout(() => {
+        console.log(2);
+    });
+    Promise.resolve().then(() => {
+        console.log(3);
+    });
+});
 
+requestAnimationFrame(() => {
+    console.log(4);
+    Promise.resolve().then(() => {
+        console.log(5);
+    });
+});
+// 输出顺序：1、3、4、5、2
+```
+```javascript
+Promise.resolve().then(() => {
+    console.log(1);
+    setTimeout(() => {
+        console.log(2);
+    });
+    Promise.resolve().then(() => {
+        console.log(3);
+    });
+});
+
+Promise.resolve().then(() => {
+    console.log(4);
+    Promise.resolve().then(() => {
+        console.log(5);
+    });
+});
+// 输出顺序：1、4、3、5、2
+```
 # requestIdleCallback
 
 根据 [MDN 文档](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)，requestIdleCallback 目前还是一个实验中的功能，还没有标准化，意图是让我们把一些计算量较大但是又没那么紧急的任务放到空闲时间去执行，而又不影响浏览器中优先级较高的任务，比如动画绘制、用户输入等。
