@@ -163,7 +163,7 @@ console.log(student1.study === student2.study); //true
 
 从上面的代码我们可以看出，`student1`和 `student2`的 `study`方法执行结果没有发生变化，但是 `study`本身指向了一个内存地址。
 
-而 **ES6 的 Class 其实只是ES5 构造函数的一个语法糖而已，在其中声明的方法是挂载到原型链上的，** 再回到话题上 Constructor bind Vs Class properties。
+而 **ES6 的 Class 其实只是ES5 构造函数的一个语法糖而已，在其中声明的方法是挂载到原型链上的**，再回到话题上 Constructor bind Vs Class properties。
 
 ![thisbindvs.jpeg](./assets/thisbindvs.jpeg)
 
