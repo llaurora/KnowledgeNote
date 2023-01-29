@@ -66,9 +66,9 @@ ReactDOM.render(<App />, document.querySelector("#root"));
     key: "title key",
     ref: null,
     props: {
-					id: "title id",
-					children: "title"
-		},
+        id: "title id",
+        children: "title"
+    },
 
     // Record the component responsible for creating this element.
     _owner: owner,
@@ -482,13 +482,13 @@ function beginWork(
     // 根据fiber上不同的tag作不同的处理
     switch (workInProgress.tag) {
         case IndeterminateComponent: {
-					return mountIndeterminateComponent(
-				        current,
-				        workInProgress,
-				        workInProgress.type,
-				        renderLanes,
-				   );
-				}
+            return mountIndeterminateComponent(
+                current,
+                workInProgress,
+                workInProgress.type,
+                renderLanes,
+           );
+        }
         // ... 省略workInProress.tag是其它类型情况时的代码
      
     }
@@ -638,7 +638,6 @@ export function renderWithHooks<Props, SecondArg>(
     ```jsx
     const HooksDispatcherOnMount: Dispatcher = {
       readContext,
-    
       useCallback: mountCallback,
       useContext: readContext,
       useEffect: mountEffect,
@@ -663,7 +662,6 @@ export function renderWithHooks<Props, SecondArg>(
     ```jsx
     const HooksDispatcherOnUpdate: Dispatcher = {
       readContext,
-    
       useCallback: updateCallback,
       useContext: readContext,
       useEffect: updateEffect,
@@ -695,13 +693,13 @@ export function renderWithHooks<Props, SecondArg>(
         // ...
         switch (workInProgress.tag) {
             case IndeterminateComponent: {
-    					return mountIndeterminateComponent(
-    				        current,
-    				        workInProgress,
-    				        workInProgress.type,
-    				        renderLanes,
-    				   );
-    				}
+                return mountIndeterminateComponent(
+                    current,
+    				workInProgress,
+    				workInProgress.type,
+    				renderLanes,
+    			);
+            }
         }
     }
     // 省略部分代码
@@ -996,7 +994,7 @@ export function renderWithHooks<Props, SecondArg>(
         componentUpdateQueue = createFunctionComponentUpdateQueue();
         // 将componentUpdateQueue赋值给fiber的更新队列updateQueue
         currentlyRenderingFiber.updateQueue = componentUpdateQueue;
-    		// fiber的updateQueue的lastEffect指向了一个effect环形链表
+        // fiber的updateQueue的lastEffect指向了一个effect环形链表
         componentUpdateQueue.lastEffect = effect.next = effect;
       } else {
         const lastEffect = componentUpdateQueue.lastEffect;
@@ -1292,37 +1290,37 @@ function commitRootImpl(root, renderPriorityLevel) {
 	        // 注意这个变量pendingPassiveEffectsRenderPriority，在进入commitRootImpl时初始值NoSchedulerPriority
 	        pendingPassiveEffectsRenderPriority = renderPriorityLevel;
 	    } else {
-		      // 分解副作用队列链表, 辅助垃圾回收.
-				  // 如果有被动作用(使用useEffect), 会把分解操作放在flushPassiveEffects函数中
-				  nextEffect = firstEffect;
-				  while (nextEffect !== null) {
-				    const nextNextEffect = nextEffect.nextEffect;
-				    nextEffect.nextEffect = null;
-				    if (nextEffect.flags & Deletion) {
-				      detachFiberAfterEffects(nextEffect);
-				    }
-				    nextEffect = nextNextEffect;
+              // 分解副作用队列链表, 辅助垃圾回收.
+              // 如果有被动作用(使用useEffect), 会把分解操作放在flushPassiveEffects函数中
+              nextEffect = firstEffect;
+              while (nextEffect !== null) {
+                const nextNextEffect = nextEffect.nextEffect;
+                nextEffect.nextEffect = null;
+                if (nextEffect.flags & Deletion) {
+                  detachFiberAfterEffects(nextEffect);
+                }
+                nextEffect = nextNextEffect;
 	  }
 	    }
 	
 	    // Read this again, since an effect might have updated it
 	    remainingLanes = root.pendingLanes;
 	
-		  // 重置一些全局变量(省略这部分代码)...
-			// 下面代码用于检测是否有新的更新任务
-			// 比如在componentDidMount函数中, 再次调用setState()
-			
-			// 1. 检测常规(异步)任务, 如果有则会发起异步调度(调度中心`scheduler`只能异步调用)
-			ensureRootIsScheduled(root, now());
+        // 重置一些全局变量(省略这部分代码)...
+        // 下面代码用于检测是否有新的更新任务
+        // 比如在componentDidMount函数中, 再次调用setState()
+        
+        // 1. 检测常规(异步)任务, 如果有则会发起异步调度(调度中心`scheduler`只能异步调用)
+        ensureRootIsScheduled(root, now());
 	    // executionContext 里面是包含有 LegacyUnbatchedContext，所以下面判断是true
-			if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
-			    // ... 省略部分不相关代码
-			    return null;
-			}
-			// 2. 检测同步任务, 如果有则主动调用flushSyncCallbackQueue(无需再次等待scheduler调度), 再次进入fiber树构造循环
-			flushSyncCallbackQueue();
-	
-	    return null;
+        if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
+            // ... 省略部分不相关代码
+            return null;
+        }
+        // 2. 检测同步任务, 如果有则主动调用flushSyncCallbackQueue(无需再次等待scheduler调度), 再次进入fiber树构造循环
+        flushSyncCallbackQueue();
+        
+        return null;
 }
 ```
 
@@ -2060,35 +2058,35 @@ function commitRootImpl(root, renderPriorityLevel) {
         // 注意这个变量pendingPassiveEffectsRenderPriority，在进入commitRootImpl时初始值NoSchedulerPriority
         pendingPassiveEffectsRenderPriority = renderPriorityLevel;
     } else {
-	      // 分解副作用队列链表, 辅助垃圾回收.
-			  // 如果有被动作用(使用useEffect), 会把分解操作放在flushPassiveEffects函数中
-			  nextEffect = firstEffect;
-			  while (nextEffect !== null) {
-			    const nextNextEffect = nextEffect.nextEffect;
-			    nextEffect.nextEffect = null;
-			    if (nextEffect.flags & Deletion) {
-			      detachFiberAfterEffects(nextEffect);
-			    }
-			    nextEffect = nextNextEffect;
+          // 分解副作用队列链表, 辅助垃圾回收.
+          // 如果有被动作用(使用useEffect), 会把分解操作放在flushPassiveEffects函数中
+          nextEffect = firstEffect;
+          while (nextEffect !== null) {
+            const nextNextEffect = nextEffect.nextEffect;
+            nextEffect.nextEffect = null;
+            if (nextEffect.flags & Deletion) {
+              detachFiberAfterEffects(nextEffect);
+            }
+            nextEffect = nextNextEffect;
   }
     }
 
     // Read this again, since an effect might have updated it
     remainingLanes = root.pendingLanes;
 
-	  // 重置一些全局变量(省略这部分代码)...
-		// 下面代码用于检测是否有新的更新任务
-		// 比如在componentDidMount函数中, 再次调用setState()
-		
-		// 1. 检测常规(异步)任务, 如果有则会发起异步调度(调度中心`scheduler`只能异步调用)
-		ensureRootIsScheduled(root, now());
+    // 重置一些全局变量(省略这部分代码)...
+    // 下面代码用于检测是否有新的更新任务
+    // 比如在componentDidMount函数中, 再次调用setState()
+    
+    // 1. 检测常规(异步)任务, 如果有则会发起异步调度(调度中心`scheduler`只能异步调用)
+    ensureRootIsScheduled(root, now());
     // executionContext 里面是包含有 LegacyUnbatchedContext，所以下面判断是true
-		if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
-		    // ... 省略部分不相关代码
-		    return null;
-		}
-		// 2. 检测同步任务, 如果有则主动调用flushSyncCallbackQueue(无需再次等待scheduler调度), 再次进入fiber树构造循环
-		flushSyncCallbackQueue();
+    if ((executionContext & LegacyUnbatchedContext) !== NoContext) {
+        // ... 省略部分不相关代码
+        return null;
+    }
+    // 2. 检测同步任务, 如果有则主动调用flushSyncCallbackQueue(无需再次等待scheduler调度), 再次进入fiber树构造循环
+    flushSyncCallbackQueue();
 
     return null;
 }
