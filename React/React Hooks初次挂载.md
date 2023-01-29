@@ -56,7 +56,7 @@ ReactDOM.render(<App />, document.querySelector("#root"));
 <div id="title id" key="title key">title</div>
 ```
 
-从 [ReactElement对象](https://www.notion.so/ReactElement-88d5bbbb7a6542298befc0fe51cc3948) 我们知道，上面一段代码经编译后就是下面这么个 ReactElement 对象，React 17.0.2 版本中创建该对象的方法定义在 `ReactJSXElement.js`文件中（[见源码](https://github.com/facebook/react/blob/12adaffef7105e2714f82651ea51936c563fe15c/packages/react/src/jsx/ReactJSXElement.js#L147)）
+从 [ReactElement对象](https://github.com/llaurora/KnowledgeNote/blob/master/React/ReactElement%E5%AF%B9%E8%B1%A1.md) 我们知道，上面一段代码经编译后就是下面这么个 ReactElement 对象，React 17.0.2 版本中创建该对象的方法定义在 `ReactJSXElement.js`文件中（[见源码](https://github.com/facebook/react/blob/12adaffef7105e2714f82651ea51936c563fe15c/packages/react/src/jsx/ReactJSXElement.js#L147)）
 
 ```jsx
 {
@@ -1384,7 +1384,7 @@ commitBeforeMutationEffects 会按照 finishedWork 副作用上的链表顺序�
     `Passive`标记只有在用到了`useEffect`钩子的函数式组件所对应的 fiber 上才有。
     
     从上面代码里面可以看到对带有`Passive` 标记的 fiber 节点，通过`scheduleCallback`单独注册了一个调度任务`task`，等待调度中心`scheduler`处理，而通过调度中心`scheduler`
-    调度的任务`task`均是通过`MessageChannel`触发, 都是异步执行的（更多关于React调度相关的可移步 [React调度Scheduler](https://www.notion.so/React-Scheduler-3636a3e300b64df19af3ac7e33cdcbf7) ），所以这儿的`flushPassiveEffects` 并不会立即执行，而是再下一轮事件循环的时候被从宏任务队列里面抓取出来之后才会被执行。
+    调度的任务`task`均是通过`MessageChannel`触发, 都是异步执行的（更多关于React调度相关的可移步 [React调度Scheduler](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E8%B0%83%E5%BA%A6Scheduler.md) ），所以这儿的`flushPassiveEffects` 并不会立即执行，而是再下一轮事件循环的时候被从宏任务队列里面抓取出来之后才会被执行。
     
 - **Snapshot标记**
   
@@ -2119,7 +2119,7 @@ function commitBeforeMutationEffects() {
 }
 ```
 
-当前面的同步代码都执行完以后，走事件循环（渲染时机Ok会走渲染流水线 [Event Loop](https://www.notion.so/Event-Loop-b027477804d04c938a0aad91d372a900) ）在下一轮循环时抓取任务后执行到注册任务回调里面（[React调度Scheduler](https://www.notion.so/React-Scheduler-3636a3e300b64df19af3ac7e33cdcbf7) ），即会执行 flushPassiveEffects，从前面分析我们知道 useLayoutEffect 的回调在 `commitRoot` ⇒ `commitRootImpl` ⇒ `commitLayoutEffects` ⇒ `commitLifeCycles` ⇒ `commitHookEffectListMount`就执行掉了，而且给effect 对象的 destory 赋了值（见上面分析 `commitHookEffectListMount`），而 useEffect 的回调到现在还并未执行，这个就要到 flushPassiveEffects，在执行 flushPassiveEffects 之前，此时关系结构如下
+当前面的同步代码都执行完以后，走事件循环（渲染时机Ok会走渲染流水线 [Event Loop](https://github.com/llaurora/KnowledgeNote/blob/master/BrowerNetwork/Event%20Loop.md) ）在下一轮循环时抓取任务后执行到注册任务回调里面（[React调度Scheduler](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E8%B0%83%E5%BA%A6Scheduler.md) ），即会执行 flushPassiveEffects，从前面分析我们知道 useLayoutEffect 的回调在 `commitRoot` ⇒ `commitRootImpl` ⇒ `commitLayoutEffects` ⇒ `commitLifeCycles` ⇒ `commitHookEffectListMount`就执行掉了，而且给effect 对象的 destory 赋了值（见上面分析 `commitHookEffectListMount`），而 useEffect 的回调到现在还并未执行，这个就要到 flushPassiveEffects，在执行 flushPassiveEffects 之前，此时关系结构如下
 
 ![commitRootBeforeFlushPassiveEffects.svg](assets/commitRootBeforeFlushPassiveEffects.svg)
 

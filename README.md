@@ -15,6 +15,7 @@
 * [React源码调试环境搭建](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E6%BA%90%E7%A0%81%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
 * [ReactElement对象](https://github.com/llaurora/KnowledgeNote/blob/master/React/ReactElement%E5%AF%B9%E8%B1%A1.md)
 * [React调度Scheduler](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E8%B0%83%E5%BA%A6Scheduler.md)
+* [React Hooks初次挂载](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%20Hooks%E5%88%9D%E6%AC%A1%E6%8C%82%E8%BD%BD.md)
 
 ### Essay
 * [音频可视化小记](https://github.com/llaurora/KnowledgeNote/blob/master/Essay/%E9%9F%B3%E9%A2%91%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B0%8F%E8%AE%B0.md)
