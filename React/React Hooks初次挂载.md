@@ -2287,6 +2287,7 @@ flushPassiveEffectsImpl 主要作用就是将之前存储在 pendingPassiveHookE
 - **useLayoutEffect**：不同于 useEffect 真正执行时机在宏任务里面，useLayoutEffect 执行时机是同步的，所以 uesLayoutEffect 是先于 useEffect 执行的；
     - useLayoutEffect 回调里面对应的 return 函数有两种执行时机**：**1、更新阶段涉及到 fiber 删除时在 `commitMutationEffects` ⇒ `commitDeletion`⇒ `safelyCallDestroy` 会直接同步执行掉；2、更新阶段比如 deps 变更了会在`commitMutationEffects` ⇒ `commitWork` ⇒ `commitHookEffectListUnmount` 会直接同步执行掉；
     - useLayoutEffect 回调在`commitLayoutEffects` ⇒ `commitLifeCycles`  ⇒ `commitHookEffectListMount` 直接同步执行掉，并在这儿赋值 useLayoutEffect 对应 effect 对象的 destroy 值；
+    - useLayoutEffect和 class 组件的的componentDidMount、componentDidUpdate从调用时机上来讲是等价的, 因为他们都在commitLayoutEffects ⇒ commitLifeCycles函数中被调用的，如果完全类比，useLayoutEffect比useEffect更符合componentDidMount、componentDidUpdate的定义；
     - 子组件的 useLayoutEffect 会先于父组件的 useEffectLayout 执行，因为 commitRoot 里面是沿着 finishedWork 副作用上的链表顺序挨着处理 fiber 的；
 - `子组件useLayoutEffect回调的return函数` ⇒ `父组件useLayoutEffect回调的return函数` ⇒ `子组件useLayoutEffect回调`⇒ `父组件useLayoutEffect回调` ⇒`子组件useEffect回调的return函数` ⇒ `父组件useEffect回调的return函数` ⇒ `子组件useEffect回调`⇒ `父组件useEffect回调`。
 
@@ -2297,7 +2298,5 @@ flushPassiveEffectsImpl 主要作用就是将之前存储在 pendingPassiveHookE
 [performUnitOfWork.drawio](assets/performUnitOfWork.drawio)
 
 # 参考资料
-
----
 
 [7kms的fiber树渲染](https://7kms.github.io/react-illustration-series/main/fibertree-commit)
