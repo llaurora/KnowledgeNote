@@ -468,7 +468,7 @@ setInitialProperties 源码文件：ReactDOMComponent.js（[见源码](https://g
 
 setInitialProperties 调用栈：`performSyncWorkOnRoot` ⇒ `renderRootSync` ⇒ `workLoopSync` ⇒ `performUnitOfWork` ⇒ `completeUnitOfWork` ⇒ `completeWork` ⇒ `finalizeInitialChildren` ⇒ `finalizeInitialChildren` ⇒ `setInitialProperties`
 
-fiber 树的构建过程这儿就不展开了，可前往 [React Hooks初次挂载](https://www.notion.so/React-Hooks-368b5e5d3e4347949cd453eb7958a1ba) 了解查看，这儿分析下 completeUnitOfWork 中的 completedWork 变量为`div#inner-silbling` 对应的 fiber 节点的时候：
+fiber 树的构建过程这儿就不展开了，可前往 [React Hooks初次挂载](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%20Hooks%E5%88%9D%E6%AC%A1%E6%8C%82%E8%BD%BD.md) 了解查看，这儿分析下 completeUnitOfWork 中的 completedWork 变量为`div#inner-silbling` 对应的 fiber 节点的时候：
 
 ```jsx
 function completeUnitOfWork(unitOfWork: Fiber): void {
@@ -775,7 +775,7 @@ export function listenToNonDelegatedEvent(
 
 我们知道在上面示例代码中，`div#root`上注册有大部分的事件委托（比如 click 冒泡/捕获监听、mousedown 冒泡/捕获监听），在`div#inner-sibling`上注册有 scroll 事件冒泡监听。
 
-不管事件是注册在哪儿的，最终都是调用的 addTrappedEventListener 方法完成注册的（参考上面事件绑定[分析addTrappedEventListener](https://www.notion.so/React-b86144dc10b0400989d7454ad64b8a92)）
+不管事件是注册在哪儿的，最终都是调用的 addTrappedEventListener 方法完成注册的（前面有过分析）
 
 ```jsx
 // ... 省略无关代码
@@ -810,7 +810,7 @@ function addTrappedEventListener(
 }
 ```
 
-`node.addEventListener(type, listener, useCapture)` 里面的这个listener 就是通过 createEventListenerWrapperWithPriority 方法返回的，从上面[分析createEventListenerWrapperWithPriority](https://www.notion.so/React-b86144dc10b0400989d7454ad64b8a92) 中我们也知道这个 listener 就是对 dispatchEvent 的包装，只是这个包装根据 React 对事件优先级划分的不同而有略微的区别而已。
+`node.addEventListener(type, listener, useCapture)` 里面的这个listener 就是通过 createEventListenerWrapperWithPriority 方法返回的，从上面分析中我们也知道这个 listener 就是对 dispatchEvent 的包装，只是这个包装根据 React 对事件优先级划分的不同而有略微的区别而已。
 
 > 稍微提下在对 dispatchEvent 包装时用的 bind：
 >- bind 并不会立即调用而且会产生了一个新的函数方法（可移步[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)）；
@@ -1088,7 +1088,7 @@ function processDispatchQueueItemsInOrder(
 
 在`div#inner-sibling`触发 scorll 事件时，同样也会先触发`div#root`上注册的 scroll 上的捕获监听（注意此时进入到 dispatchEvent 函数里面的 eventSystemFlags 是 IS_CAPTURE_PHASE），流程和上面触发`div#root`上注册监听的 mousedown 的捕获事件一样，这儿也就不再分析了，因为在`div#inner-sibling`对应的 jsx 的 props 里面没有 onScrollCapture，往上找的`div#outer`对应的 jsx props 里面上也没有 onScrollCapture，所以在 scroll 的捕获阶段没有任何输出，如果`div#inner-sibling`和`div#outer`对应的 jsx上都有 onScrollCapture，那同样会先执行`div#outer`的 onScrollCapture 再执行 `div#inner-sibling` 的 onScrollCapture。
 
-因为`div#root`上并没有注册 scroll 的冒泡监听，scroll 的冒泡监听是注册到自身元素即`div#inner-sibling`上的，接下来就该轮到`div#inner-sibling` 上注册的 scroll 对应的 listener 执行了，同样会走到 dispatchEvent（只是现在传给 dispatchEvent 函数里面的 eventSystemFlags 是 IS_NON_DELEGATED，可参考上面[分析 listenToNonDelegatedEvent](https://www.notion.so/React-b86144dc10b0400989d7454ad64b8a92) 的时候），然后分析下进到 extractEvents 收集 listeners 的时候：
+因为`div#root`上并没有注册 scroll 的冒泡监听，scroll 的冒泡监听是注册到自身元素即`div#inner-sibling`上的，接下来就该轮到`div#inner-sibling` 上注册的 scroll 对应的 listener 执行了，同样会走到 dispatchEvent（只是现在传给 dispatchEvent 函数里面的 eventSystemFlags 是 IS_NON_DELEGATED，可参考上面分析 listenToNonDelegatedEvent 的时候），然后分析下进到 extractEvents 收集 listeners 的时候：
 
 ```jsx
 function extractEvents(
@@ -1132,7 +1132,7 @@ function extractEvents(
 }
 ```
 
-注意在 extractEvents 里面调用 accumulateSinglePhaseListeners 收集 listeners 的时候传入的 accumulateTargetOnly 是 true，进入到 accumulateSinglePhaseListeners 里面就是一个从当前 fiber 向上遍历 fiber 树的过程，accumulateSinglePhaseListeners 在上面也分析过（[见上面分析](https://www.notion.so/React-b86144dc10b0400989d7454ad64b8a92)）
+注意在 extractEvents 里面调用 accumulateSinglePhaseListeners 收集 listeners 的时候传入的 accumulateTargetOnly 是 true，进入到 accumulateSinglePhaseListeners 里面就是一个从当前 fiber 向上遍历 fiber 树的过程，accumulateSinglePhaseListeners 在上面也分析过
 
 ```jsx
 // 省略部分不相关代码及flow类型定义
