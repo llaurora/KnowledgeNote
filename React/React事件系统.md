@@ -44,7 +44,7 @@ const App = () => {
 ReactDOM.render(<App />, document.querySelector("#root"));
 ```
 
-为什么在`div#root`上有那么多监听的事件，这些监听事件注册有捕获有冒泡比如 click、mousedown，而有的又只要捕获比如 scroll、load，那 scroll 冒泡的事件监听又注册在哪儿？
+为什么在`div#root`上有那么多监听的事件，这些监听事件注册有捕获有冒泡比如 click、mousedown，而有的又只有捕获比如 scroll、load，那 scroll 冒泡的事件监听又注册在哪儿？
 
 ![reactDivRootEvents.jpg](./assets/reactDivRootEvents.jpg)
 
@@ -67,7 +67,7 @@ BeforeInputEventPlugin.registerEvents();
 
 虽然上面几个插件都是调用的 registerEvents，但具体到里面有点儿不一样
 
-- SimpleEventPlugin：`SimpleEventPlugin.registerEvents` ⇒ `registerSimpleEvents` ⇒ `registerSimplePluginEventsAndSetTheirPriorities` ⇒ `registerTwoPhaseEvent([见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/events/EventRegistry.js#L35))` ⇒ `registerDirectEvent`；
+- SimpleEventPlugin：`SimpleEventPlugin.registerEvents` ⇒ `registerSimpleEvents` ⇒ `registerSimplePluginEventsAndSetTheirPriorities` ⇒ `registerTwoPhaseEvent`([见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/events/EventRegistry.js#L35)) ⇒ `registerDirectEvent`；
 - EnterLeaveEventPlugin：`EnterLeaveEventPlugin.registerEvents` ⇒ `registerDirectEvent`；
 - ChangeEventPlugin、SelectEventPlugin 以及 BeforeInputEventPlugin 同 EnterLeaveEventPlugin；
 
@@ -145,7 +145,7 @@ export function registerSimpleEvents() {
 
 然后看上面 registerSimpleEvents 代码，调用的 setEventPriorities（[见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/events/DOMEventProperties.js#L180)） 方法好说就是给放在 otherDiscreteEvents 分类里面的事件名称登记 DiscreteEvent 优先级，主要看下 registerSimplePluginEventsAndSetTheirPriorities 方法（[见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/events/DOMEventProperties.js#L159)）。
 
-```
+```jsx
 // 省略部分注释，flow代码
 function registerSimplePluginEventsAndSetTheirPriorities(
   eventTypes: Array<DOMEventName | string>, // 比如 discreteEventPairsForSimpleEventPlugin
@@ -172,7 +172,7 @@ function registerSimplePluginEventsAndSetTheirPriorities(
 
 ## listenToAllSupportedEvents
 
-在 React 代码初次挂载启动的时候，在初始化配置创建根fiber 即 HostRootFiber、根fiberNode 即 FiberRootNode 的时候会调用 createRootImpl（[见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/client/ReactDOMRoot.js#L120)。
+在 React 代码初次挂载启动的时候，在初始化配置创建根fiber 即 HostRootFiber、根fiberNode 即 FiberRootNode 的时候会调用 createRootImpl（[见源码](https://github.com/facebook/react/blob/v17.0.2/packages/react-dom/src/client/ReactDOMRoot.js#L120))。
 
 createRootImpl 调用栈：`ReactDOM.ender` ⇒ `legacyRenderSubtreeIntoContainer` ⇒ `legacyCreateRootFromDOMContainer` ⇒ `createLegacyRoot` ⇒ `new ReactDOMBlockingRoot` ⇒ `createRootImpl`）。
 
