@@ -812,29 +812,22 @@ function addTrappedEventListener(
 
 `node.addEventListener(type, listener, useCapture)` 里面的这个listener 就是通过 createEventListenerWrapperWithPriority 方法返回的，从上面[分析createEventListenerWrapperWithPriority](https://www.notion.so/React-b86144dc10b0400989d7454ad64b8a92) 中我们也知道这个 listener 就是对 dispatchEvent 的包装，只是这个包装根据 React 对事件优先级划分的不同而有略微的区别而已。
 
-<aside>
-💡 稍微提下在对 dispatchEvent 包装时用的 bind：
-
-- bind 并不会立即调用而且会产生了一个新的函数方法（可移步[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)）；
-- bind 可以改变 this 的指向，如果第一个参数是 null 或者 undefined，this 指向并不会被改变；
-- bind 第一个参数后面的其余参数有一个占位的作用，调用新函数入参会依次先检查前面的参数有没有被占位，第一个没有被占位的参数会被用来接收新的入参，如果都被占位了，那新的入参传不进来；
-    
-    ```jsx
-    function calcTotal(x, y, z) {
-        console.log(x * y * z);
-    }
-    calcTotal(); // NaN
-    calcTotal(1, 2, 3); // 6
-    const bindCalcTotal = calcTotal.bind(null, 4, 5);
-    bindCalcTotal(6); // 4*5*6=120，最后输出为120
-    const otherBindCalcTotal = calcTotal.bind(null, 4, 5, 6);
-    otherBindCalcTotal(7); // 还是 4*5*6=120，输出为120
-    ```
-    
-
-上面的 listener 即是对 dispatchEvent 不同程度的包装，比如`dispatchEvent.bind(null,domEventName,eventSystemFlags,targetContainer)`返回的新函数即 listener 将 dispatchEvent 的前 3 个参数都固定了，在触发 listener 调用时传入的新的入参即会被第 4 个参数 nativeEvent 接收。
-
-</aside>
+> 稍微提下在对 dispatchEvent 包装时用的 bind：
+>- bind 并不会立即调用而且会产生了一个新的函数方法（可移步[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)）；
+>- bind 可以改变 this 的指向，如果第一个参数是 null 或者 undefined，this 指向并不会被改变；
+>- bind 第一个参数后面的其余参数有一个占位的作用，调用新函数入参会依次先检查前面的参数有没有被占位，第一个没有被占位的参数会被用来接收新的入参，如果都被占位了，那新的入参传不进来；
+> ```jsx
+>    function calcTotal(x, y, z) {
+>        console.log(x * y * z);
+>    }
+>    calcTotal(); // NaN
+>    calcTotal(1, 2, 3); // 6
+>    const bindCalcTotal = calcTotal.bind(null, 4, 5);
+>    bindCalcTotal(6); // 4*5*6=120，最后输出为120
+>    const otherBindCalcTotal = calcTotal.bind(null, 4, 5, 6);
+>    otherBindCalcTotal(7); // 还是 4*5*6=120，输出为120
+> ```
+>上面的 listener 即是对 dispatchEvent 不同程度的包装，比如`dispatchEvent.bind(null,domEventName,eventSystemFlags,targetContainer)`返回的新函数即 listener 将 dispatchEvent 的前 3 个参数都固定了，在触发 listener 调用时传入的新的入参即会被第 4 个参数 nativeEvent 接收。
 
 ## mousedown
 
