@@ -1153,18 +1153,18 @@ commitRoot 定义在`ReactFiberWorkLoop.old.js` 文件中（[见源码](https://
 
 ```jsx
 function commitRoot(root) {
-  // 获取渲染优先级renderPriorityLevel，此处为NormalPriority
-  const renderPriorityLevel = getCurrentPriorityLevel();
-  // 在commitRootImpl执行过程中，Scheduler里面的currentPriorityLevel变为ImmediatePriority，此前为NormalPriority
-  runWithPriority(
-    ImmediateSchedulerPriority,
-    commitRootImpl.bind(null, root, renderPriorityLevel),
-  );
-  return null;
+    // 获取渲染优先级renderPriorityLevel，此处为NormalPriority（这儿是react事件优先级NormalPriority为97）
+    const renderPriorityLevel = getCurrentPriorityLevel();
+    // 在commitRootImpl执行过程中，Scheduler里面的currentPriorityLevel变为ImmediatePriority（Scheduler优先级为1），此前为NormalPriority（Scheduler优先级为3）
+    runWithPriority(
+        ImmediateSchedulerPriority, // 即ImmediatePriority，为react事件优先级99
+        commitRootImpl.bind(null, root, renderPriorityLevel),
+    );
+    return null;
 }
 ```
 
-commitRoot 就是去 Scheduler 里面转了一下，做了一些优先级标记最终还是落到 commitRootImpl 上，在 commitRootImpl 执行过程中，Scheduler 里面的 currentPriorityLevel 变为 ImmediatePriority，此前为NormalPriority（先忽略其它更改 currentPriorityLevel 的情况），待 commitRootImpl 执行完以后又将 currentPriorityLevel 恢复为 NormalPriority。
+commitRoot 就是去 Scheduler 里面转了一下，做了一些优先级标记最终还是落到 commitRootImpl 上，在 commitRootImpl 执行过程中，Scheduler 里面的 currentPriorityLevel 变为 ImmediatePriority，此前为NormalPriority（先忽略其它更改 currentPriorityLevel 的情况），待 commitRootImpl 执行完以后再将 currentPriorityLevel 恢复为 NormalPriority。
 
 commitRootImpl 定义在`ReactFiberWorkLoop.old.js` 文件中（[见源码](https://github.com/facebook/react/blob/17.0.2/packages/react-reconciler/src/ReactFiberWorkLoop.old.js#L1888)）
 
@@ -2035,11 +2035,11 @@ function commitAttachRef(finishedWork) {
 
 - **rootDoesHavePassiveEffects**
   
-    因为本示例中的代码，有在函数式组件里面用到 useEffect，在 commitBeforeMutationEffects 阶段会将 rootDoesHavePassiveEffects 设置为 true（见上面分析 `commitBeforeMutationEffects`），所以会进入 rootDoesHavePassiveEffects 为 true 的逻辑里面，在收尾代码（ensureRootIsScheduled 之前）之前将 pendingPassiveEffectsRenderPriority 设置为 renderPriorityLevel（pendingPassiveEffectsRenderPriority 初始值为 NoSchedulerPriority），而 renderPriorityLevel 是在 commitRoot 里面 bind 了 commitRootImpl 传进来的，可见上面分析 `commitRoot`，传进来的 renderPriorityLevel 是为 NormalPriority，所以 **pendingPassiveEffectsRenderPriority  会被设置为 NormalPriority**（这个在flushPassiveEffects会有用）
+    因为本示例中的代码，有在函数式组件里面用到 useEffect，在 commitBeforeMutationEffects 阶段会将 rootDoesHavePassiveEffects 设置为 true（见上面分析 `commitBeforeMutationEffects`），所以会进入 rootDoesHavePassiveEffects 为 true 的逻辑里面，在收尾代码（ensureRootIsScheduled 之前）之前将 pendingPassiveEffectsRenderPriority 设置为 renderPriorityLevel（pendingPassiveEffectsRenderPriority 初始值为 NoSchedulerPriority，是reat事件优先级90），而 renderPriorityLevel 是在 commitRoot 里面 bind 了 commitRootImpl 传进来的，可见上面分析 commitRoot，传进来的 renderPriorityLevel 是为 NormalPriority（react事件优先级97），所以 pendingPassiveEffectsRenderPriority  会被设置为 NormalPriority（这个在 flushPassiveEffects 会有用）
     
 - **executionContext**
   
-    executionContext 变量初始值为 NoContext，而在初次挂载的时候，在调用 updateContainer 的时候，updateContainer被用 unbatchedUpdates 包了一下，executionContext 上是有 LegacyUnbatchedContext（可见上面分析 `unbatchedUpdates`），在执行完 updateContainer 所有同步代码后又被重置成了 NoContext。
+    executionContext 变量初始值为 NoContext，而在初次挂载的时候，在调用 updateContainer 的时候，updateContainer被用 unbatchedUpdates 包了一下，executionContext 上是有 LegacyUnbatchedContext（可见上面分析 `unbatchedUpdates`），在执行完 updateContainer 所有同步代码后再被重置成了 NoContext。
     
 
 ```jsx
