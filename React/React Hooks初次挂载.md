@@ -817,6 +817,8 @@ export function renderWithHooks<Props, SecondArg>(
     
     ![appCompFirstHook.svg](assets/appCompFirstHook.svg)
     
+    > 注意：上面的dispatch是dispatchAction.bind(null,currentlyRenderingFiber,queue)这个新函数（不会立即执行，并且有固定前置入参），图上不是很严谨。
+
     当第二个 useState 执行完以后，第一个 hook 的 next 会指向新的 hook 对象，此时有如下关系结构
     
     ![appCompSecondUseState.svg](assets/appCompSecondUseState.svg)
