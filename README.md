@@ -17,6 +17,7 @@
 * [React调度Scheduler](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E8%B0%83%E5%BA%A6Scheduler.md)
 * [React事件系统](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F.md)
 * [React Hooks初次挂载](https://github.com/llaurora/KnowledgeNote/blob/master/React/React%20Hooks%E5%88%9D%E6%AC%A1%E6%8C%82%E8%BD%BD.md)
+* [React18 批量更新](https://github.com/llaurora/KnowledgeNote/blob/master/React/React18%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0.md)
 
 ### Essay
 * [音频可视化小记](https://github.com/llaurora/KnowledgeNote/blob/master/Essay/%E9%9F%B3%E9%A2%91%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B0%8F%E8%AE%B0.md)
