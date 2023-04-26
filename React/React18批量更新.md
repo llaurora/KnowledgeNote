@@ -1540,7 +1540,7 @@ export function flushSyncCallbackQueue() {
     
       ensureRootIsScheduled 主要逻辑可参考下图：
   
-      ![scheduleUpdateOnFiber17Vs18.svg](./assets/scheduleUpdateOnFiber17Vs18.svg)
+      ![scheduleUpdateOnFiber17Vs18.svg](./assets/react18ensureRootIsScheduled.svg)
     
       注意 ensureRootIsScheduled 在 React18.2.0 中和 React17.0.2 中有有些不一样：
     
@@ -1900,4 +1900,4 @@ export function flushSyncCallbackQueue() {
     
       **setTimeout、Promise.then/catch以及原生注册事件在 React18.2.0 也能做到批量更新，相对于 React17.0.2 其实主要就是在 scheduleUpdateOnFiber 在调用 ensureRootIsScheduled 注册完任务之后，回到 scheduleUpdateOnFiber 收尾的时候去除了根据执行上下文 executionContext 是否是 NoContext 而去判断是否同步刷新任务的逻辑**。
     
-      ![scheduleUpdateOnFiber17Vs18.jpg](React18%20%E6%89%B9%E9%87%8F%E6%9B%B4%E6%96%B0%2094c6d9e346c14ee9a84c89241c29ccaf/scheduleUpdateOnFiber17Vs18.jpg)
+      ![scheduleUpdateOnFiber17Vs18.jpg](./assets/scheduleUpdateOnFiber17Vs18.jpg)
