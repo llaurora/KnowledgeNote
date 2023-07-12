@@ -320,24 +320,23 @@ export function useSyncExternalStoreWithSelector(subscribe, getSnapshot, getServ
     
 - 如果在组件中使用的时候对 selector 做了处理，比如提到外面或者用 useMemo 包一下，不传 isEqual 或者 isEqual 传了但和 selector 也做了一样的处理，保证上面的 useMemo 的 deps 不变，也就是比对前后所有快照值，比对前后取的部分值，决定是返回前一次的值，还是这一次的值；
 
-> 之所以不用 useRef 存储上一次的值，在 useSyncExternalStoreWithSelector 注释里也说明了，是为了防止比如兄弟组件或者hook状态共享的问题，可以 [codesandbox useShareableState](https://codesandbox.io/s/floral-wildflower-pp0bg?file=/src/App.js:90-107) 查看示例。
+> 在 useSyncExternalStoreWithSelector 转化 selector 的时候为啥用闭包而不用 useRef 去暂存上一次的值？这儿暂时没搞明白。
 > 
 
 这里个人感觉使用 useMemo 去对 selector 做的一些处理并没有带来多少优化，useMemo 本来在 re-render 的时候就有比对 deps 的开销，而且里面还得去比对前后的值，比对快照的所有 state 值。如果每次 getSelection 的时候直接重新取值，然后依然使用闭包存储上一次的值，直接比对前后值决定返回旧值还是新值是不是更快？
 
 ```jsx
 // 伪代码...
+const prevSelectionRef = useRef();
+
 const getSelection = (() => {
-    let prevSelection;
-    return () => {
-        const nextSelection = selector(getSnapshot());
-        if (isEqual !== undefined && isEqual(prevSelection, nextSelection)) {
-            return prevSelection;
-        }
-        prevSelection = nextSelection;
-        return nextSelection;
-    };
-})();
+  const nextSelection = selector(getSnapshot());
+  if (isEqual !== undefined && isEqual(prevSelectionRef.current, nextSelection)) {
+    return prevSelectionRef.current;
+  }
+  prevSelectionRef.current = nextSelection;
+  return nextSelection;
+});
 ```
 
 # useSyncExternalStore
